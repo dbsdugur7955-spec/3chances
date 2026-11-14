@@ -915,6 +915,7 @@
       return [
         { t: 'say', who: ME, text: c === 'hold' ? '본인이 직접 오시면\n내드리겠습니다.' : '본인 확인이 안 되면\n내드릴 수 없습니다.' },
         { t: 'say', who: TH, text: '…포털에는 그런 얘기\n없었는데.', face: 'B4', ms: 130 },
+        { t: 'say', who: TH, text: '시간만 날렸네. 쳇.' },
         { t: 'exit' },
         { t: 'say', who: null, text: '포털.' , spd: 120 },
         { t: 'say', who: null, text: '포털에는 색상과 상표만\n올라간다.' }, { t: 'run', fn: sSeojin } ];
@@ -1773,10 +1774,11 @@
       var c = el('button', 'main', '이어하기'); c.appendChild(el('small', null, SCENE[sv.id][0] + ' · ' + SCENE[sv.id][1]));
       onPress(c, resume); acts.appendChild(c);
     }
-    var n = el('button', sv && sv.id !== 'sOpen' ? '' : 'main', '처음부터'), armed = false;
+    var pdone = meta.prologue && meta.prologue.done, lbl = pdone ? '1화 새로 시작' : '처음부터';   // prologue finished: the fresh start is episode 1
+    var n = el('button', sv && sv.id !== 'sOpen' ? '' : 'main', lbl), armed = false;
     onPress(n, function () {
-      if (sv && sv.id !== 'sOpen' && !armed) { armed = true; n.textContent = '처음부터 — 한 번 더 누르면 기록이 지워집니다'; n.style.fontSize = 'calc(var(--u) * 4.6)'; return; }
-      store(SAVE, null); start(sOpen);
+      if (sv && sv.id !== 'sOpen' && !armed) { armed = true; n.textContent = lbl + ' — 한 번 더 누르면 기록이 지워집니다'; n.style.fontSize = 'calc(var(--u) * 4.6)'; return; }
+      store(SAVE, null); if (pdone) startEp1(e1s1); else start(sOpen);
     });
     acts.appendChild(n);
     var e = el('button', null, '에피소드'); if (meta.prologue && meta.prologue.done) e.appendChild(el('small', null, meta.ep1 && meta.ep1.done ? '1화 완료' : '프롤로그 완료 · 1화 열림'));
@@ -1793,7 +1795,7 @@
     var phone = done ? { '센터': '휴대폰은 서랍에 남았다', '언니': '휴대폰은 언니가 가져갔다', '민재': '휴대폰은 강민재가 가져갔다' }[meta.prologue.PHONE] : '';
     r.appendChild(el('div', 'st fs-s' + (done ? ' done' : ''), done ? '완료 · ' + phone : sv && sv.id !== 'sOpen' && sv.id.charAt(0) !== 'e' ? '진행 중 · ' + SCENE[sv.id][0] : '약 10분'));
     var b = el('button', null, done ? '다시 하기' : '시작하기'); onPress(b, function () { store(SAVE, null); start(sOpen); }); r.appendChild(b);
-    if (done || DEV) {                                // scene select opens once the episode has been finished
+    if (DEV) {                                        // scene jump: test only
       var j = el('div', 'jrow');
       [['우산', sMalsun], ['지갑', sTaeho], ['언니', sSeojin], ['남자', sMinjae], ['마감', sClose]].forEach(function (x) {
         var jb = el('button', null, x[0]); onPress(jb, function () { start(x[1]); }); j.appendChild(jb);
