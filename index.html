@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>3번의 기회</title>
+<meta name="description" content="모든 진실을 알 수 없습니다. 당신만의 이야기를 만드세요. 선택의 책임은 당신께 있습니다.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="3번의 기회">
+<meta property="og:title" content="3번의 기회 — 프롤로그 「분실물 센터」">
+<meta property="og:description" content="모든 진실을 알 수 없습니다. 당신만의 이야기를 만드세요. 선택의 책임은 당신께 있습니다.">
+<meta property="og:image" content="og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="3번의 기회">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
+<style>
+  @font-face { font-family: "Galmuri11"; src: url("fonts/Galmuri11.woff2") format("woff2"); font-display: block; }
+  @font-face { font-family: "Galmuri9"; src: url("fonts/Galmuri9.woff2") format("woff2"); font-display: block; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+  body { display: flex; align-items: center; justify-content: center; font-family: "Galmuri11", monospace; color: #e6e6df;
+         -webkit-user-select: none; user-select: none; touch-action: manipulation; word-break: keep-all; }
+  #stage { position: relative; width: calc(var(--u) * 144); height: calc(var(--u) * 256); background: #000; overflow: hidden; }
+  canvas { position: absolute; left: 0; top: 0; width: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
+  #bg { height: 100%; }
+  /* a person is never pasted into the room: the shot cuts to them alone on a flat dark field, and they rise into frame */
+  #win { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; background: #131315; }
+  #cv { left: 0; top: calc(var(--u) * 28); width: calc(var(--u) * 144); height: calc(var(--u) * 192); }
+  .fs { font-size: calc(var(--u) * 6.2); line-height: 1.5; }
+  .fs-s { font-family: "Galmuri9", monospace; font-size: calc(var(--u) * 5); line-height: 1.5; }
+
+  #hud { position: absolute; left: 0; top: 0; right: 0; height: calc(var(--u) * 11); background: #000; display: flex;
+         justify-content: space-between; align-items: center; padding: 0 calc(var(--u) * 4); color: #a9aba6; }
+  #hud .q { margin-left: auto; }
+  #menuBtn { height: calc(var(--u) * 9); width: calc(var(--u) * 13); margin: 0 0 0 calc(var(--u) * 4); padding: 0; box-shadow: none; border-color: #3a3b3d; color: #a9aba6; font-size: calc(var(--u) * 6); line-height: 1; }
+  #menuBtn.pressed { transform: none; }
+  #menu { position: absolute; inset: 0; z-index: 30; background: rgba(0, 0, 0, .9); display: flex; flex-direction: column; justify-content: center; padding: 0 calc(var(--u) * 16); }
+  #menu .mt { color: #8f918c; margin-bottom: calc(var(--u) * 6); text-align: center; }
+  #menu button { height: calc(var(--u) * 17); font-size: calc(var(--u) * 6.2); margin-top: calc(var(--u) * 3); }
+  #menu .note { color: #6d6f6a; margin-top: calc(var(--u) * 6); text-align: center; white-space: pre-line; }
+  #hud .q b { color: #e6e6df; font-weight: normal; }
+
+  #dlg { position: absolute; left: calc(var(--u) * 4); right: calc(var(--u) * 4); bottom: calc(var(--u) * 12);
+         min-height: calc(var(--u) * 50); background: #08080a; border: calc(var(--u) * 1) solid #d2d2cb;
+         padding: calc(var(--u) * 7) calc(var(--u) * 6) calc(var(--u) * 6); white-space: pre-line; }
+  #dlg .who { position: absolute; left: calc(var(--u) * 4); top: calc(var(--u) * -6.5); background: #d2d2cb; color: #0a0a0c;
+              padding: 0 calc(var(--u) * 3); height: calc(var(--u) * 10); line-height: calc(var(--u) * 10); }
+  #dlg.me { border-color: #7d7f7a; } #dlg.me .who { background: #7d7f7a; }
+  #dlg.mono { border-color: #3c3c3f; color: #a9aba6; }
+  #dlg .more { position: absolute; right: calc(var(--u) * 5); bottom: calc(var(--u) * 3); width: 0; height: 0;
+               border-left: calc(var(--u) * 2.5) solid transparent; border-right: calc(var(--u) * 2.5) solid transparent;
+               border-top: calc(var(--u) * 3.5) solid #d2d2cb; animation: bob 0.9s steps(2) infinite; }
+  @keyframes bob { 50% { transform: translateY(calc(var(--u) * 1)); } }
+  #tapHint { position: absolute; left: 0; right: 0; bottom: calc(var(--u) * 2); text-align: center; color: #55575a; }
+
+  #pick { position: absolute; left: calc(var(--u) * 4); right: calc(var(--u) * 4); bottom: calc(var(--u) * 4); }
+  #early { position: absolute; left: calc(var(--u) * 4); right: calc(var(--u) * 4); top: calc(var(--u) * 13); display: flex; gap: calc(var(--u) * 2); }
+  #early button { flex: 1; height: calc(var(--u) * 12); font-size: calc(var(--u) * 5.4); padding: 0; margin: 0; background: rgba(8, 8, 10, .82); color: #d2d2cb; }
+  #early button.give { border-color: #c42c28; }
+  #early button.pressed { background: #d2d2cb; color: #0a0a0c; }
+  #early button.give.pressed { background: #c42c28; border-color: #c42c28; color: #fff; }
+  #pick .top { display: flex; justify-content: space-between; align-items: center; margin: 0 calc(var(--u) * -4) calc(var(--u) * 2); color: #a9aba6;
+               background: rgba(0, 0, 0, .82); padding: calc(var(--u) * 2) calc(var(--u) * 4) 0; }
+  #pick .top b { color: #e6e6df; font-weight: normal; }
+  button { font-family: inherit; color: inherit; background: #08080a; border: calc(var(--u) * 1) solid #6d6f6a; margin: 0;
+           padding: 0 calc(var(--u) * 4); border-radius: 0; cursor: pointer; position: relative;
+           box-shadow: 0 calc(var(--u) * 2) 0 #000, 0 calc(var(--u) * 2) 0 calc(var(--u) * 1) #3a3b3d; margin-bottom: calc(var(--u) * 2); }
+  button { transition: transform .11s steps(3), box-shadow .11s steps(3), background-color .11s, color .11s, border-color .11s; }
+  button.pressed { transition: none; transform: translateY(calc(var(--u) * 2)); box-shadow: none; background: #d2d2cb; color: #0a0a0c; border-color: #d2d2cb; }
+  button:disabled { transition: none; transform: translateY(calc(var(--u) * 2)); box-shadow: none; background: #08080a; }
+  #pick .opt { display: block; width: 100%; text-align: left; height: calc(var(--u) * 13); margin-top: calc(var(--u) * 1); font-size: calc(var(--u) * 6.2); }
+  #pick .opt:disabled { color: #4b4d4f; border-color: #2a2a2d; text-decoration: line-through; }
+  #pick .ledger { height: calc(var(--u) * 11); font-size: calc(var(--u) * 5.6); border-color: #b9b29a; color: #d8d2bc; }
+  #pick .ledger.pressed { background: #d8d2bc; border-color: #d8d2bc; color: #0a0a0c; }
+  #pick.decide .opt, #pick.act .opt { text-align: center; height: calc(var(--u) * 17); }
+  #pick.decide .opt.give { border-color: #c42c28; }
+  #pick.decide .opt.give.pressed { background: #c42c28; border-color: #c42c28; color: #fff; }
+
+  #ov { position: absolute; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #ov .cap { white-space: pre-line; } #ov .cap .dim { color: #a9aba6; } #ov .cap .red { color: #c42c28; }
+  #ov .cap p { margin: calc(var(--u) * 4) 0; opacity: 0; }
+  #ov .cap p.on { animation: tubeOn .5s steps(1) forwards, flick 5.3s steps(1) .5s infinite; }
+  #ov .cap p.dim.on { animation: tubeOn .5s steps(1) forwards, flick 7.1s steps(1) 1.3s infinite; }
+  #ov .cap p.red.on { animation: tubeOn .5s steps(1) forwards, jitter 2.6s steps(1) .5s infinite, flickRed 3.7s steps(1) .5s infinite; }
+  @keyframes tubeOn { 0% { opacity: 0; } 12% { opacity: 1; } 22% { opacity: .15; } 34% { opacity: .9; } 46% { opacity: .3; } 60%, 100% { opacity: 1; } }
+  @keyframes flick { 0%, 100% { opacity: 1; } 61% { opacity: .55; } 62.5% { opacity: 1; } 64% { opacity: .7; } 65% { opacity: 1; } 91% { opacity: .8; } 92% { opacity: 1; } }
+  @keyframes flickRed { 0%, 100% { opacity: 1; } 18% { opacity: .5; } 19.5% { opacity: 1; } 47% { opacity: .75; } 48% { opacity: 1; } 76% { opacity: .35; } 77% { opacity: 1; } 78.5% { opacity: .6; } 80% { opacity: 1; } }
+  @keyframes jitter {
+    0%, 100% { transform: translate(0, 0); text-shadow: none; }
+    8%  { transform: translate(calc(var(--u) * -1), 0); text-shadow: calc(var(--u) * 1.5) 0 0 rgba(196, 44, 40, .45); }
+    11% { transform: translate(calc(var(--u) * 1), calc(var(--u) * .5)); text-shadow: calc(var(--u) * -1.5) 0 0 rgba(196, 44, 40, .45); }
+    14% { transform: translate(0, calc(var(--u) * -.5)); text-shadow: none; }
+    17% { transform: translate(calc(var(--u) * -.5), 0); }
+    20% { transform: translate(0, 0); }
+    55% { transform: translate(calc(var(--u) * .5), 0); }
+    58% { transform: translate(calc(var(--u) * -1), calc(var(--u) * .5)); text-shadow: calc(var(--u) * 2) 0 0 rgba(196, 44, 40, .4); }
+    61% { transform: translate(calc(var(--u) * 1), 0); text-shadow: none; }
+    64% { transform: translate(0, 0); }
+  }
+  #ov .sub { position: absolute; bottom: calc(var(--u) * 10); left: 0; right: 0; color: #55575a; }
+  .blink { animation: hintBlink 1.5s steps(1) infinite; }
+  @keyframes hintBlink { 0%, 100% { opacity: 1; } 55% { opacity: .25; } }
+  @media (prefers-reduced-motion: reduce) { #ov .cap p.on, #ov .cap p.dim.on, #ov .cap p.red.on { animation: none; opacity: 1; } .blink { animation: none; } }
+
+  #ov.doc.prop { background: #000; padding-top: calc(var(--u) * 11); }
+  .propwrap { width: calc(var(--u) * 144); height: calc(var(--u) * 192); overflow: hidden; flex: none; }
+  .propcv.still { animation: none !important; }
+  .propcv { position: static; width: 100%; height: 100%; transform-origin: 50% 55%; animation: push 7s steps(14) forwards; }
+  @keyframes push { from { transform: scale(1); } to { transform: scale(1.09); } }
+  .proptext { white-space: pre-line; margin-top: calc(var(--u) * 5); color: #d2d2cb; }
+  #ov.doc { background: rgba(0, 0, 0, .9); justify-content: flex-start; padding-top: calc(var(--u) * 16); }
+  .paper { width: calc(var(--u) * 128); background: #cfcab8; color: #1a1a1c; text-align: left; padding: calc(var(--u) * 5); margin-bottom: calc(var(--u) * 4);
+           border: calc(var(--u) * 1) solid #8c8876; white-space: pre-line; }
+  .paper.memo { background: #d9cf8e; border-color: #a39a5c; transform: rotate(-1.5deg); margin-top: calc(var(--u) * 20); }
+  .paper.card { background: #e4e2da; width: calc(var(--u) * 104); margin-top: calc(var(--u) * 50); text-align: center; padding: calc(var(--u) * 9) calc(var(--u) * 5); }
+  .paper h3 { margin: 0 0 calc(var(--u) * 3); font-weight: normal; font-size: calc(var(--u) * 6.2); border-bottom: calc(var(--u) * .7) solid #1a1a1c; padding-bottom: calc(var(--u) * 2); }
+  .paper .row { padding: calc(var(--u) * 2.5) 0; border-bottom: calc(var(--u) * .5) dashed #8c8876; }
+  .paper .row:last-child { border-bottom: 0; }
+  .paper .row.hit { background: #e9e2c0; outline: calc(var(--u) * 1) solid #c42c28; outline-offset: calc(var(--u) * 1); }
+  .paper .k, .paper .priv { color: #5c5a50; }
+  .paper .big { font-family: "Galmuri11", monospace; font-size: calc(var(--u) * 7); }
+  .paper .signbox { margin-top: calc(var(--u) * 4); border-top: calc(var(--u) * .5) solid #8c8876; padding-top: calc(var(--u) * 2); }
+  .paper .signbox canvas { position: static; display: block; width: calc(var(--u) * 118); height: calc(var(--u) * 46); }
+  .paper .line { margin-top: calc(var(--u) * 4); padding-bottom: calc(var(--u) * 1.5); border-bottom: calc(var(--u) * .5) solid #8c8876; min-height: calc(var(--u) * 13); }
+  .paper .hand { font-family: "Galmuri11", monospace; font-size: calc(var(--u) * 7); color: #1c2a66; }
+  .paper .sig { color: #1c2a66; }
+  .paper .sig { font-size: calc(var(--u) * 9); letter-spacing: calc(var(--u) * 1); transform: rotate(-4deg); display: inline-block; }
+  .idc { display: flex; gap: calc(var(--u) * 4); align-items: center; }
+  .idc i { display: block; width: calc(var(--u) * 20); height: calc(var(--u) * 24); background: #9a9684; flex: none; }
+  .phone { width: calc(var(--u) * 104); background: #101013; border: calc(var(--u) * 2) solid #3a3a3e; padding: calc(var(--u) * 5); text-align: left; color: #e6e6df; }
+  .phone .nm { text-align: center; padding-bottom: calc(var(--u) * 4); border-bottom: calc(var(--u) * .5) solid #3a3a3e; margin-bottom: calc(var(--u) * 6); }
+  .phone .bub { display: inline-block; background: #2c2c31; padding: calc(var(--u) * 3) calc(var(--u) * 4); white-space: pre-line; }
+  .scr { position: relative; width: calc(var(--u) * 144); height: calc(var(--u) * 192); flex: none; }
+  .scr canvas { position: static; width: 100%; height: 100%; display: block; }
+  .scr.sheet .ink { position: absolute; color: #1b1b1e; white-space: pre-line; text-align: left; transform-origin: 0 0; }
+  .ink.notice .ttl { font-size: calc(var(--u) * 6.2); border-bottom: calc(var(--u) * .7) solid #1b1b1e; padding-bottom: calc(var(--u) * 1); margin-bottom: calc(var(--u) * 2); }
+  .ink.notice .nrow { margin-bottom: calc(var(--u) * 2.2); line-height: 1.35; } .ink.notice .nrow b { font-weight: normal; } .ink.notice .nrow span { color: #4a4a4e; }
+  .ink.lhead { color: #6a5f48; } .ink.lcell { line-height: 1.32; font-size: calc(var(--u) * 4.6); } .ink.lcell.priv { color: #3d3a33; }
+  .scr.sheet .lline { position: absolute; left: calc(var(--u) * 8); right: calc(var(--u) * 8); height: calc(var(--u) * .5); background: #b9ad8f; }
+  .scr.sheet .lhit { position: absolute; left: calc(var(--u) * 7); right: calc(var(--u) * 7); border: calc(var(--u) * 1) solid #c42c28; }
+  .ink.rttl { border-bottom: calc(var(--u) * .7) solid #1b1b1e; padding-bottom: calc(var(--u) * 1.5); } .ink.k { color: #5c5c60; }
+  .scr.sheet .signcv { position: absolute; left: calc(var(--u) * 13); top: calc(var(--u) * 80); width: calc(var(--u) * 118); height: calc(var(--u) * 46); }
+  .scr.sheet .signline { position: absolute; left: calc(var(--u) * 16); width: calc(var(--u) * 100); top: calc(var(--u) * 124); height: calc(var(--u) * .5); background: #8a8a8e; }
+  .scr.sheet .ink.cardt { text-align: center; }
+  .scr .t { position: absolute; left: 0; right: 0; text-align: center; color: #e6e6df; white-space: pre-line; }
+  .scr .t.big { font-family: "Galmuri11", monospace; font-size: calc(var(--u) * 15); }
+  .scr .t.dim { color: #aab3c2; }
+  .scr .t.card { left: calc(var(--u) * 24); right: calc(var(--u) * 22); text-align: left; color: #e9ebee; }
+  .scr.call .big { animation: ring .9s steps(2) infinite; }
+  .scr.call { animation: buzz .9s steps(6) infinite; }
+  @keyframes buzz { 0%, 55%, 100% { transform: none; } 60%, 80% { transform: translateX(calc(var(--u) * 1)); } 70%, 90% { transform: translateX(calc(var(--u) * -1)); } }
+  .stick { position: absolute; left: calc(var(--u) * 26); top: calc(var(--u) * 62); width: calc(var(--u) * 78); height: calc(var(--u) * 27); transform: rotate(-5deg); color: #141416; text-align: center; }
+  .stick canvas { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .stick .l1 { position: absolute; left: 0; right: 0; top: calc(var(--u) * 7.5); }
+  .stick .l2 { position: absolute; left: 0; right: 0; top: calc(var(--u) * 16.5); font-family: "Galmuri9", monospace; font-size: calc(var(--u) * 4); color: #5a5a5e; }
+  .stick.slap { animation: slap .42s steps(5) both; }
+  @keyframes slap { from { transform: rotate(-11deg) scale(1.9); opacity: 0; } 60% { transform: rotate(-4deg) scale(.94); opacity: 1; } to { transform: rotate(-5deg) scale(1); opacity: 1; } }
+  .thud { animation: thud .22s steps(3); }
+  .slam { animation: slam .32s steps(5); }
+  @keyframes slam { from { transform: translateY(calc(var(--u) * 40)) scale(1.12); } 60% { transform: translateY(calc(var(--u) * -3)) scale(1.02); } to { transform: none; } }
+  @keyframes thud { 33% { transform: translateY(calc(var(--u) * 2)); } 66% { transform: translateY(calc(var(--u) * -1)); } }
+  #ring { position: absolute; inset: 0; pointer-events: none; }
+  #ring .tone { position: absolute; left: 0; right: 0; top: calc(var(--u) * 206); text-align: center; color: #a9aba6; letter-spacing: calc(var(--u) * 1); }
+  #ring .bz { position: absolute; left: 0; right: 0; top: calc(var(--u) * 232); text-align: center; color: #e6e6df; letter-spacing: calc(var(--u) * 2); animation: jit .09s steps(2) infinite; }
+  @keyframes jit { 50% { transform: translate(calc(var(--u) * 1), calc(var(--u) * -.6)); } }
+  #stage.shake { animation: stshake .1s steps(2) infinite; }
+  @keyframes stshake { 50% { transform: translate(calc(var(--u) * 1.6), calc(var(--u) * -1)); } }
+  @keyframes ring { 50% { opacity: .55; } }
+  .phone .tm { color: #8f918c; margin-top: calc(var(--u) * 2); }
+  .docnote { color: #a9aba6; white-space: pre-line; margin-top: calc(var(--u) * 2); }
+
+  #ov.title, #ov.eps { justify-content: flex-start; align-items: stretch; text-align: left; background: rgba(0, 0, 0, .74); padding: calc(var(--u) * 62) calc(var(--u) * 12) 0; }
+  #ov.title h1 { font-weight: normal; font-size: calc(var(--u) * 14); margin: 0; letter-spacing: calc(var(--u) * 1); }
+  #ov.title .ep { color: #a9aba6; margin: calc(var(--u) * 4) 0 0; white-space: pre-line; line-height: 1.6; }
+  #ov.title .acts { margin-top: auto; padding-bottom: calc(var(--u) * 16); display: flex; flex-direction: column; }
+  #ov.title button, #ov.eps button { height: calc(var(--u) * 17); font-size: calc(var(--u) * 6.2); margin-top: calc(var(--u) * 3); text-align: left; padding: 0 calc(var(--u) * 6); background: rgba(8, 8, 10, .86); }
+  #ov.title button.main { border-color: #d2d2cb; }
+  #ov.title button small { color: #8f918c; font-size: calc(var(--u) * 5); margin-left: calc(var(--u) * 3); }
+  #ov.title .ver { color: #55575a; margin-top: calc(var(--u) * 5); text-align: center; }
+  #ov.eps { padding-top: calc(var(--u) * 22); background: rgba(0, 0, 0, .86); }
+  #ov.eps h2 { font-weight: normal; font-size: calc(var(--u) * 7.4); margin: 0 0 calc(var(--u) * 6); }
+  #ov.eps .erow { border-top: calc(var(--u) * .5) solid #3a3b3d; padding: calc(var(--u) * 5) 0; }
+  #ov.eps .erow .no { color: #8f918c; } #ov.eps .erow .nm { font-size: calc(var(--u) * 7); margin: calc(var(--u) * 1) 0; }
+  #ov.eps .erow .st { color: #a9aba6; white-space: pre-line; } #ov.eps .erow.lock .nm { color: #55575a; } #ov.eps .erow .st.done { color: #9fd3ae; }
+  #ov.eps .jrow { display: flex; gap: calc(var(--u) * 2); margin-top: calc(var(--u) * 3); }
+  #ov.eps .jrow button { flex: 1; height: calc(var(--u) * 12); font-size: calc(var(--u) * 5); padding: 0; margin: 0; text-align: center; border-color: #3a3b3d; color: #a9aba6; }
+  #ov.eps .back { margin-top: auto; margin-bottom: calc(var(--u) * 16); }
+
+  #ov.end { justify-content: flex-start; padding: calc(var(--u) * 16) calc(var(--u) * 8) 0; text-align: left; align-items: stretch; }
+  #ov.end h2 { font-weight: normal; margin: 0 0 calc(var(--u) * 2); font-size: calc(var(--u) * 7.4); }
+  #ov.end .tagline { color: #a9aba6; margin-bottom: calc(var(--u) * 4); white-space: pre-line; }
+  #ov.end dl { margin: 0; } #ov.end dt { color: #8f918c; margin-top: calc(var(--u) * 4.5); }
+  #ov.end dd { margin: calc(var(--u) * 1) 0 0; white-space: pre-line; }
+  #ov.end.seen { padding: calc(var(--u) * 14) calc(var(--u) * 4) 0; }
+  #ov.end .who { display: flex; justify-content: space-between; color: #d2d2cb; margin-top: calc(var(--u) * 4); }
+  #ov.end .who .miss { color: #6d6f6a; }
+  #ov.end .cuts { display: flex; gap: calc(var(--u) * 2); margin-top: calc(var(--u) * 1.5); min-height: calc(var(--u) * 52); }
+  #ov.end .cut canvas { position: static; display: block; width: calc(var(--u) * 44); height: calc(var(--u) * 44); }
+  #ov.end .cut .lb { color: #8f918c; }
+  #ov.end.seen button { margin-top: calc(var(--u) * 5); height: calc(var(--u) * 15); }
+  #ov.end dd.bad { color: #c42c28; }
+  #ov.known { justify-content: flex-start; align-items: stretch; text-align: left; padding: calc(var(--u) * 20) calc(var(--u) * 8) 0; }
+  #ov.known .khead { color: #8f918c; margin-bottom: calc(var(--u) * 5); }
+  #ov.known p { margin: 0 0 calc(var(--u) * 3.2); opacity: 0; line-height: 1.45; color: #e6e6df; }
+  #ov.known p.on { animation: tubeOn .5s steps(1) forwards; }
+  #ov.over button { margin-top: calc(var(--u) * 14); height: calc(var(--u) * 17); font-size: calc(var(--u) * 6.2); padding: 0 calc(var(--u) * 6); }
+  #ov.end button { margin-top: calc(var(--u) * 8); height: calc(var(--u) * 17); font-size: calc(var(--u) * 6.2); }
+  .hide { display: none !important; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="bg" width="144" height="256"></canvas>
+  <div id="win" class="hide"><canvas id="cv" width="144" height="192"></canvas></div>
+  <div id="hud" class="fs-s"><span id="clock"></span><span class="q" id="qleft"></span><button id="menuBtn" class="hide" aria-label="메뉴">≡</button></div>
+  <div id="menu" class="fs hide"></div>
+  <div id="dlg" class="fs hide"><span class="who fs-s" id="who"></span><span id="txt"></span><i class="more hide" id="more"></i></div>
+  <div id="tapHint" class="fs-s blink hide">화면을 눌러 계속</div>
+  <div id="early" class="hide"></div>
+  <div id="pick" class="hide"></div>
+  <div id="ring" class="fs hide"></div>
+  <div id="ov" class="fs"></div>
+</div>
+<script>
+(function () {
+  'use strict';
+  var ASSETS = {"bg": ["bg_a", "bg_b", "bg_empty_a", "bg_empty_b", "bg_shut1", "bg_shut2", "bg_shutter", "landing"], "dohyeon": ["face_E0", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "malsun": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "minjae": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "face_C1", "face_C2", "face_C3", "face_C4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "eye_B4_half", "eye_B4_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "mouth_C4_1", "mouth_C4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "prop": ["call", "drawer_a", "drawer_b", "drawer_c", "lock", "p_card", "p_ledger", "p_memo", "p_notice", "p_receipt", "phone_back", "phone_front", "photo", "sticker", "umbrella", "wallet"], "seojin": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "taeho": ["face_E0", "face_B1", "face_B2", "face_B3", "face_B4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "face_P2_t1", "face_P2_t2", "face_P2_t3", "face_P2_t4", "face_P2", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_B4_1", "mouth_B4_2", "mouth_P1_1", "mouth_P1_2", "mouth_P2_1", "mouth_P2_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"]};
+
+  // ------------------------------------------------------------------ layout + helpers
+  var root = document.documentElement, stage = document.getElementById('stage');
+  function fit() { var w = Math.min(window.innerWidth, window.innerHeight * 144 / 256); root.style.setProperty('--u', (w / 144) + 'px'); }
+  fit(); window.addEventListener('resize', fit);
+  var $ = function (id) { return document.getElementById(id); };
+  var dlg = $('dlg'), who = $('who'), txt = $('txt'), more = $('more'), tapHint = $('tapHint'), pick = $('pick'), ov = $('ov'), qleft = $('qleft'), clockEl = $('clock');
+  var win = $('win'), cv = $('cv'), ctx = cv.getContext('2d'), bgc = $('bg'), bctx = bgc.getContext('2d');
+  ctx.imageSmoothingEnabled = false; bctx.imageSmoothingEnabled = false;
+  function show(el, on) { el.classList.toggle('hide', !on); }
+  var pressLock = false;
+  function onPress(btn, fn) {
+    var t0 = 0;
+    btn.addEventListener('pointerdown', function () { if (!btn.disabled && !pressLock) { t0 = Date.now(); btn.classList.add('pressed'); } });
+    ['pointerleave', 'pointercancel'].forEach(function (ev) { btn.addEventListener(ev, function () { if (!pressLock) btn.classList.remove('pressed'); }); });
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (pressLock || btn.disabled) return;
+      pressLock = true;
+      if (!t0) t0 = Date.now();
+      btn.classList.add('pressed');
+      try { if (navigator.vibrate) navigator.vibrate(8); } catch (err) {}
+      var held = Date.now() - t0; t0 = 0;
+      setTimeout(function () {                       // stay down long enough to be seen...
+        btn.classList.remove('pressed');             // ...spring back up...
+        setTimeout(function () { pressLock = false; fn(); }, 170);   // ...and only then move on
+      }, Math.max(0, 90 - held));
+    });
+  }
+  document.addEventListener('touchstart', function () {}, { passive: true });
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  // ------------------------------------------------------------------ images
+  var img = {}, pendingLoads = 0;
+  Object.keys(ASSETS).forEach(function (dir) {
+    img[dir] = {};
+    ASSETS[dir].forEach(function (n) {
+      pendingLoads++;
+      var im = new Image(); im.onload = im.onerror = loaded; im.src = 'img/' + dir + '/' + n + '.png'; img[dir][n] = im;
+    });
+  });
+
+  // ------------------------------------------------------------------ background (booth view): tube flicker, desk clock
+  var B = { name: null, flicker: false, dim: false, time: '', close: false, last: 'bg' };
+  var DIG = { '0': '111101101101111', '1': '001001001001001', '2': '111001111100111', '3': '111001111001111', '4': '101101111001001',
+              '5': '111100111001111', '6': '111100111101111', '7': '111001001001001', '8': '111101111101111', '9': '111101111001111' };
+  function drawBg() {
+    bctx.fillStyle = '#000'; bctx.fillRect(0, 0, 144, 256);
+    if (!B.name) return;
+    if (B.name === 'landing') { bctx.drawImage(img.bg.landing, 0, 0); return; }
+    var key = B.name.indexOf('bg_shut') === 0 ? B.name : B.name + (B.dim ? '_b' : '_a');
+    bctx.drawImage(img.bg[key], 0, 0);
+    if (B.time) drawClock(93, 166);
+  }
+  function drawClock(x, y) {                        // the desk clock
+    bctx.fillStyle = '#161818'; bctx.fillRect(x - 2, y - 2, 22, 9);
+    bctx.fillStyle = B.dim ? '#93a59a' : '#c4d6ca';
+    B.time.split('').forEach(function (ch) {
+      if (ch === ':') { bctx.fillRect(x, y + 1, 1, 1); bctx.fillRect(x, y + 3, 1, 1); x += 2; return; }
+      var d = DIG[ch];
+      for (var i = 0; i < 15; i++) if (d.charAt(i) === '1') bctx.fillRect(x + i % 3, y + Math.floor(i / 3), 1, 1);
+      x += 4;
+    });
+  }
+  function flickerLoop() {
+    setTimeout(function () {
+      if (B.flicker && B.name && B.name !== 'landing' && B.name !== 'bg_shutter') {
+        var seq = [70, 60, 50, 140, 40, 90], i = 0;
+        (function step() {
+          B.dim = !B.dim; drawBg();
+          if (i < seq.length) setTimeout(step, seq[i++]); else { B.dim = false; drawBg(); }
+        })();
+      }
+      flickerLoop();
+    }, 2200 + Math.random() * 4800);
+  }
+
+  // ------------------------------------------------------------------ portraits
+  var CH = {
+    malsun: { name: '오말순', eye: function (f) { return f === 'E0' ? 'E0' : null; } },
+    taeho:  { name: '정태호', cut: [50, 50], eye: function (f) { return f === 'E0' ? 'E0' : null; } },
+    dohyeon: { name: '백도현', cut: [50, 50], eye: function (f) { return f === 'E0' ? 'E0' : null; } },
+    seojin: { name: '윤서진', cut: [50, 50], eye: function (f) { return f === 'E0' ? 'E0' : null; } },
+    minjae: { name: '강민재', cut: [50, 50], eye: function (f) { return (f === 'E0' || f.charAt(0) === 'A') ? 'E0' : (f === 'B4' ? 'B4' : null); } }
+  };
+  var P = { ch: null, face: 'E0', eye: null, mouth: 0, breath: 0, busy: false, pending: null, token: 0 };
+  function pim(n) { return P.ch ? img[P.ch][n] : null; }
+  function draw() {
+    if (!P.ch) return;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.clearRect(0, 0, 144, 192);
+    ctx.drawImage(pim('face_' + P.face), 0, 0);
+    if (P.eye && pim(P.eye)) ctx.drawImage(pim(P.eye), 0, 0);
+    var m = pim('mouth_' + P.face + '_' + P.mouth);
+    if (P.mouth && !P.busy && m) ctx.drawImage(m, 0, 0);
+    if (P.breath) ctx.drawImage(pim('breath_' + P.breath), 0, 0);
+    // the body sinks into the dark in a few hard steps instead of ending on a straight edge
+    ctx.globalCompositeOperation = 'source-atop';
+    var fade = [[150, .22], [162, .45], [172, .68], [181, .86], [187, 1]];
+    for (var k = 0; k < fade.length; k++) {
+      ctx.fillStyle = 'rgba(19,19,21,' + fade[k][1] + ')';
+      ctx.fillRect(0, fade[k][0], 144, (k + 1 < fade.length ? fade[k + 1][0] : 192) - fade[k][0]);
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  function eyeSet() { return P.ch ? CH[P.ch].eye(P.face) : null; }
+  var breathSeq = [[0, 900], [1, 330], [2, 250], [3, 230], [4, 260], [5, 700], [4, 330], [3, 290], [2, 290], [1, 360]], bi = 0;
+  function breathe() { P.breath = breathSeq[bi][0]; draw(); var w = breathSeq[bi][1]; bi = (bi + 1) % breathSeq.length; setTimeout(breathe, w); }
+  function blink() {
+    var set = eyeSet();
+    if (!set || P.eye || P.busy) return;
+    var seq = [['eye_' + set + '_half', 55], ['eye_' + set + '_closed', 95], ['eye_' + set + '_half', 55]], i = 0, tk = P.token;
+    (function step() {
+      if (tk !== P.token) return;
+      if (i < seq.length) { P.eye = seq[i][0]; draw(); setTimeout(step, seq[i++][1]); }
+      else { P.eye = null; draw(); }
+    })();
+  }
+  function autoBlink() { setTimeout(function () { blink(); autoBlink(); }, 2800 + Math.random() * 4200); }
+  function gazeDown(ms, tries) {
+    if (eyeSet() !== 'E0' || !pim('eye_E0_gaze_d')) return;
+    if (P.busy || P.eye) { if ((tries || 0) < 8) setTimeout(function () { gazeDown(ms, (tries || 0) + 1); }, 250); return; }
+    P.eye = 'eye_E0_gaze_d'; draw();
+    setTimeout(function () { if (P.eye === 'eye_E0_gaze_d') { P.eye = null; draw(); } }, ms);
+  }
+  // E0 <-> A1..A4 / B1..B4 change gradually; E0 <-> P1 (a turned or lowered head) changes inside a blink
+  function pathTo(target, ms) {
+    var cur = P.face, s = [], m = ms || 260;
+    if (cur === target) return s;
+    if (cur.charAt(0) === 'P') { var p = cur.split('_')[0]; s.push([p + '_t4', 70], [p + '_t3', 70], [p + '_t2', 90], [p + '_t1', 60], ['E0', 60]); cur = 'E0'; }
+    var fam = cur === 'E0' ? null : cur.charAt(0), n = cur === 'E0' ? 0 : +cur.charAt(1);
+    var tPose = target.charAt(0) === 'P', tf = (target === 'E0' || tPose) ? null : target.charAt(0);
+    if (fam && fam !== tf) { for (var i = n - 1; i >= 1; i--) s.push([fam + i, m]); s.push(['E0', m]); n = 0; fam = null; }
+    if (tf) { for (var j = (fam === tf ? n : 0) + 1; j <= 4; j++) s.push([tf + j, m]); }
+    if (tPose) s.push([target + '_t1', 60], [target + '_t2', 110], [target + '_t3', 70], [target + '_t4', 70], [target, 0]);
+    return s;
+  }
+  function faceTo(target, ms) {
+    if (!P.ch) return;
+    if (P.busy) { P.pending = [target, ms]; return; }
+    var steps = pathTo(target, ms);
+    if (!steps.length) return;
+    P.busy = true; P.eye = null;
+    var i = 0, tk = P.token;
+    (function step() {
+      if (tk !== P.token) return;
+      if (i < steps.length) { P.face = steps[i][0]; draw(); setTimeout(step, steps[i++][1]); }
+      else { P.busy = false; draw(); if (P.pending) { var p = P.pending; P.pending = null; faceTo(p[0], p[1]); } }
+    })();
+  }
+  // arriving: hard cut from the room to a flat dark field, then the person rises into frame and settles
+  function zoom() {}
+  function place(x, y) { cv.style.transform = 'translate(calc(var(--u) * ' + x + '), calc(var(--u) * ' + y + '))'; }
+  function enter(ch, done) {
+    P.token++; P.ch = ch; P.face = 'E0'; P.eye = null; P.mouth = 0; P.busy = false; P.pending = null;
+    B.close = true; draw(); place(0, 200); show(win, true);
+    var ys = [200, 200, 200, 150, 104, 66, 38, 19, 8, 2, -1, 0], j = 0;      // a beat of empty dark first
+    (function rise() {
+      place(0, ys[j]);
+      if (++j < ys.length) return setTimeout(rise, 55);
+      done();
+    })();
+  }
+  function leave(done) {
+    var ys = [2, 10, 30, 64, 112, 170, 200], i = 0;
+    (function sink() {
+      if (i < ys.length) { place(0, ys[i++]); return setTimeout(sink, 50); }
+      setTimeout(function () {
+        P.token++; P.ch = null; B.close = false; show(win, false); place(0, 0); drawBg(); done();
+      }, 260);
+    })();
+  }
+
+  // ------------------------------------------------------------------ documents (anything with writing on it is made here)
+  var LEDGER = [
+    { no: 3, when: '수 08:10', where: '2호차 선반', what: '접이식 우산 · 검정', priv: '—' },
+    { no: 5, when: '목 18:40', where: '개찰구 앞', what: '반지갑 · 갈색 · 브렌트', priv: '신분증 1(김○○), 카드 2,\n현금 없음, 아이 사진 1' },
+    { no: 6, when: '수 00:35', where: '승강장 7-4 끝 벤치 아래\n(막차 후 청소 중)', what: '휴대폰 · 검정 · 오르비', priv: '투명 케이스, 뒷면 고양이 스티커,\n액정 왼쪽 아래 깨짐, 잠금 상태' }
+  ];
+  // handwriting: a Hangul name is drawn as pen strokes. Each person holds the pen differently.
+  var CHO = 'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ', JUNG = 'ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ', JONG = ' ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ';
+  var PEN = {   // speed: pixels per tick · jit: shake · slant · rise: climbs to the right · lift: pause between strokes (ms) · w: letter width
+    '오말순': { speed: 4, jit: 1.1, slant: 0.02, rise: 0, lift: 47, w: 26, wob: 0.9 },
+    '정태호': { speed: 10, jit: 1.6, slant: 0.34, rise: 2.5, lift: 15, w: 31, wob: 0 },
+    '윤서진': { speed: 6, jit: 1.3, slant: 0.16, rise: 1, lift: 27, w: 27, wob: 0.5 },
+    '강민재': { speed: 4, jit: 0, slant: 0, rise: 0, lift: 55, w: 26, wob: 0 },
+    _: { speed: 4, jit: 0.6, slant: 0.1, rise: 0, lift: 45, w: 26, wob: 0 }
+  };
+  var RING = (function () { var p = []; for (var i = 0; i <= 12; i++) { var a = -Math.PI / 2 - i * Math.PI / 6; p.push([0.5 + 0.5 * Math.cos(a), 0.5 + 0.5 * Math.sin(a)]); } return p; })();
+  function ring(x0, y0, x1, y1) { return RING.map(function (p) { return [x0 + p[0] * (x1 - x0), y0 + p[1] * (y1 - y0)]; }); }
+  var GLYPH = {
+    'ㅇ': [ring(0, 0, 1, 1)],
+    'ㅁ': [[[0, 0], [0, 1]], [[0, 0], [1, 0], [1, 1]], [[0, 1], [1, 1]]],
+    'ㅅ': [[[0.5, 0], [0.4, 0.5], [0, 1]], [[0.48, 0.4], [1, 1]]],
+    'ㅈ': [[[0, 0], [1, 0]], [[0.55, 0], [0.4, 0.5], [0, 1]], [[0.48, 0.45], [1, 1]]],
+    'ㅌ': [[[0, 0], [1, 0]], [[0, 0.5], [0.9, 0.5]], [[0, 0], [0, 1], [1, 1]]],
+    'ㅎ': [[[0.3, 0], [0.7, 0]], [[0, 0.28], [1, 0.28]], ring(0.15, 0.45, 0.85, 1)],
+    'ㄱ': [[[0, 0], [1, 0], [0.75, 1]]],
+    'ㄴ': [[[0, 0], [0, 1], [1, 1]]],
+    'ㄹ': [[[0, 0], [1, 0], [1, 0.5], [0, 0.5], [0, 1], [1, 1]]],
+    'ㅏ': [[[0.35, 0], [0.35, 1]], [[0.35, 0.5], [1, 0.5]]],
+    'ㅓ': [[[0, 0.5], [0.6, 0.5]], [[0.6, 0], [0.6, 1]]],
+    'ㅐ': [[[0.15, 0], [0.15, 1]], [[0.15, 0.5], [0.7, 0.5]], [[0.7, 0], [0.7, 1]]],
+    'ㅣ': [[[0.5, 0], [0.5, 1]]],
+    'ㅗ': [[[0.5, 0], [0.5, 0.6]], [[0, 0.6], [1, 0.6]]],
+    'ㅜ': [[[0, 0.3], [1, 0.3]], [[0.5, 0.3], [0.5, 1]]],
+    'ㅠ': [[[0, 0.3], [1, 0.3]], [[0.35, 0.3], [0.3, 1]], [[0.65, 0.3], [0.65, 1]]]
+  };
+  function sylStrokes(ch) {                           // strokes of one syllable inside a unit cell
+    var c = ch.charCodeAt(0) - 0xAC00; if (c < 0 || c > 11171) return [];
+    var cho = CHO.charAt(Math.floor(c / 588)), jung = JUNG.charAt(Math.floor((c % 588) / 28)), jong = JONG.charAt(c % 28).trim();
+    var tall = 'ㅏㅐㅑㅒㅓㅔㅕㅖㅣ'.indexOf(jung) >= 0, B;
+    if (tall) B = jong ? [[0.05, 0, 0.55, 0.52], [0.6, 0, 1, 0.62], [0.18, 0.7, 0.92, 1]] : [[0.05, 0.12, 0.55, 0.88], [0.6, 0, 1, 1]];
+    else B = jong ? [[0.2, 0, 0.8, 0.3], [0.05, 0.34, 0.95, 0.66], [0.15, 0.74, 0.85, 1]] : [[0.2, 0, 0.8, 0.45], [0.05, 0.5, 0.95, 1]];
+    var out = [];
+    [cho, jung, jong].forEach(function (j, i) {
+      if (!j || !GLYPH[j]) return;
+      var b = B[i];
+      GLYPH[j].forEach(function (pl) { out.push(pl.map(function (p) { return [b[0] + p[0] * (b[2] - b[0]), b[1] + p[1] * (b[3] - b[1])]; })); });
+    });
+    return out;
+  }
+  function signPath(name, st) {                       // -> [{pts:[[x,y]...] one pixel apart, last: end of a letter}]
+    var seed = 0; name.split('').forEach(function (ch) { seed = (seed * 31 + ch.charCodeAt(0)) % 9973; });
+    function rnd() { seed = (seed * 137 + 187) % 9973; return seed / 9973 - 0.5; }
+    var out = [], H = 30, x0 = 10, y0 = 8 + st.rise * 2;
+    name.split('').forEach(function (ch, i) {
+      var ss = sylStrokes(ch);
+      ss.forEach(function (pl, k) {
+        var ctl = pl.map(function (p) {
+          return [x0 + i * (st.w + 6) + (p[0] + (0.5 - p[1]) * st.slant) * st.w + rnd() * st.jit * 2, y0 - i * st.rise + p[1] * H + rnd() * st.jit * 2];
+        });
+        var pts = [], ph = rnd() * 6;
+        for (var a = 0; a + 1 < ctl.length; a++) {
+          var dx = ctl[a + 1][0] - ctl[a][0], dy = ctl[a + 1][1] - ctl[a][1], n = Math.max(1, Math.ceil(Math.sqrt(dx * dx + dy * dy)));
+          for (var t = 0; t < n; t++) {
+            var wob = st.wob ? Math.sin((pts.length + ph) * 0.9) * st.wob : 0;               // an unsteady hand
+            pts.push([ctl[a][0] + dx * t / n + wob * (dy ? 1 : 0), ctl[a][1] + dy * t / n + wob * (dy ? 0 : 1)]);
+          }
+        }
+        pts.push(ctl[ctl.length - 1]);
+        out.push({ pts: pts, last: k === ss.length - 1 });
+      });
+    });
+    return out;
+  }
+  var docBusy = false, docTimer = null, docFinish = function () {}, docDone = function () {};
+  function sigRow(label, name) { var d = el('div', null, label + '  '); d.appendChild(el('span', 'sig', name)); return d; }
+  function screen(kind, pic, rows) {                 // rows: [class, text, top in units]
+    var w = el('div', 'scr ' + kind), c = el('canvas'); c.width = 144; c.height = 192;
+    var x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(img.prop[pic], 0, 0);
+    w.appendChild(c);
+    rows.forEach(function (r) { var t = el('div', 't fs-s ' + r[0], r[1]); t.style.top = 'calc(var(--u) * ' + r[2] + ')'; w.appendChild(t); });
+    return w;
+  }
+  function sticker(slap) {                           // the hold label: received picture, two lines of writing on it
+    var k = el('div', 'stick' + (slap ? ' slap' : '')), c = el('canvas'); c.width = 78; c.height = 27;
+    var x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(img.prop.sticker, 0, 0);
+    k.appendChild(c); k.appendChild(el('div', 'l1 fs-s', '경찰 인계 대기')); k.appendChild(el('div', 'l2', '서평역 유실물 센터'));
+    return k;
+  }
+  // the drawer seen from above. Three pictures: everything in it / umbrella gone / umbrella and wallet gone.
+  function drawDrawer(x, open, pick, blink, jig) {
+    var pic = img.prop[!F.UMB ? 'drawer_a' : !F.WAL ? 'drawer_b' : 'drawer_c'];
+    x.fillStyle = '#0b0b0c'; x.fillRect(0, 0, 144, 192);
+    var off = Math.round((1 - open / 150) * -184);                      // the drawer body slides out from under the desk edge
+    x.save(); x.beginPath(); x.rect(0, 8, 144, 184); x.clip();
+    x.drawImage(pic, 0, 8, 144, 184, 0, 8 + off, 144, 184);
+    function tag(n, tx, ty) { x.fillStyle = '#1a1a1c'; var d = DIG[n]; for (var i = 0; i < 15; i++) if (d.charAt(i) === '1') x.fillRect(tx + (i % 3) * 2, ty + off + Math.floor(i / 3) * 2, 2, 2); }
+    tag('3', 13, 13); tag('5', 125, 13); tag('6', 125, 94);
+    if (jig) {                                                         // the phone buzzing in its bay
+      var jx = jig % 2 ? 1 : -1;
+      x.fillStyle = '#0b0b0c'; x.fillRect(72, 93 + off, 44, 76);
+      x.drawImage(pic, 73, 94, 42, 74, 73 + jx, 94 + off, 42, 74);
+    }
+    if (F.STICKER) { x.drawImage(img.prop.sticker, 0, 0, 78, 27, 80, 118 + off, 26, 9); x.fillStyle = '#55575a'; x.fillRect(84, 122 + off, 18, 1); x.fillRect(87, 124 + off, 12, 1); }
+    if (pick && blink) {
+      var r = pick === 3 ? [8, 8, 45, 168] : pick === 5 ? [56, 8, 80, 78] : [56, 89, 80, 87];
+      x.strokeStyle = '#e6e6df'; x.lineWidth = 1; x.strokeRect(r[0] + .5, r[1] + off + .5, r[2] - 1, r[3] - 1);
+    }
+    x.restore();
+    x.drawImage(pic, 0, 0, 144, 8, 0, 0, 144, 8);                       // the desk edge stays put
+  }
+  function sheet(pic) {                              // a received picture to write on
+    var w = el('div', 'scr sheet'), c = el('canvas'); c.width = 144; c.height = 192;
+    var x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(img.prop[pic], 0, 0);
+    w.appendChild(c); return w;
+  }
+  function ink(w, cls, text, left, top, width, rot) { // writing placed at (left, top) in units, optionally turned with the paper
+    var t = el('div', 'ink ' + cls, text);
+    t.style.left = 'calc(var(--u) * ' + left + ')'; t.style.top = 'calc(var(--u) * ' + top + ')';
+    if (width) t.style.width = 'calc(var(--u) * ' + width + ')';
+    if (rot) t.style.transform = 'rotate(' + rot + 'deg)';
+    w.appendChild(t); return t;
+  }
+  var docs = {
+    drawer: function (o) {                            // slides out in heavy steps, then the bay being reached for is marked
+      var c = el('canvas', 'propcv still'); c.width = 144; c.height = 192;
+      var x = c.getContext('2d'), wrap = el('div', 'propwrap'); wrap.appendChild(c);
+      var steps = [6, 30, 70, 112, 150], i = 0, n = 0;
+      docBusy = true;
+      function loop() {                               // open: keep the mark blinking (and the phone buzzing) until it is closed
+        n++; drawDrawer(x, 150, o.pick, n % 2, o.buzz ? n : 0);
+        docTimer = setTimeout(loop, o.buzz ? 90 : 420);
+      }
+      (function slide() {
+        drawDrawer(x, steps[i], 0, 0, o.buzz ? i : 0);
+        wrap.classList.remove('thud'); void wrap.offsetWidth; wrap.classList.add('thud');
+        if (++i < steps.length) docTimer = setTimeout(slide, 170); else docTimer = setTimeout(function () { docDone(); loop(); }, 320);
+      })();
+      docFinish = function () { clearTimeout(docTimer); docDone(); loop(); };
+      return [wrap, el('div', 'proptext fs', o.text || '')];
+    },
+    stick: function () {                              // the hold sticker goes onto the back of the phone
+      var w = screen('', 'phone_back', []);
+      docBusy = true;
+      docTimer = setTimeout(function () {
+        w.appendChild(sticker(true)); w.classList.add('thud');
+        try { if (navigator.vibrate) navigator.vibrate(20); } catch (e) {}
+        docTimer = setTimeout(docDone, 500);
+      }, 700);
+      docFinish = function () { clearTimeout(docTimer); if (!w.querySelector('.stick')) w.appendChild(sticker(false)); docDone(); };
+      return [w, el('div', 'proptext fs', '‘경찰 인계 대기’\n스티커를 붙인다.')];
+    },
+    prop: function (o) {                              // a close-up cut of one object, slowly pushing in
+      var c = el('canvas', 'propcv'); c.width = 144; c.height = 192;
+      var x = c.getContext('2d'); x.imageSmoothingEnabled = false; x.drawImage(img.prop[o.name], 0, 0);
+      var wrap = el('div', 'propwrap'); wrap.appendChild(c);
+      if (o.sticker) { wrap.style.position = 'relative'; wrap.appendChild(sticker(false)); c.style.animation = 'none'; }
+      var out = [wrap];
+      if (o.text) out.push(el('div', 'proptext fs', o.text));
+      return out;
+    },
+    memo: function () {                               // sticky note on the monitor bezel
+      var w = sheet('p_memo');
+      ink(w, 'fs', '지우 씨,\n본사 회의 갑니다.\n6시 정각에 셔터 내리고\n퇴근해요.', 22, 58, 100, -2);
+      ink(w, 'fs', '— 박 주임', 74, 128, 50, -2);
+      return [w];
+    },
+    notice: function () {                             // printed sheet under the desk glass, lying about 5 degrees off
+      var w = sheet('p_notice');
+      var box = ink(w, 'fs-s notice', '', 27, 36, 104, -5);
+      box.appendChild(el('div', 'ttl', '수령 안내'));
+      ['우산·의류·잡화\n수령 대장에 서명 후 인도', '지갑·휴대폰·신분증류\n본인 확인 후 인도', '대리 수령\n위임장, 대리인 신분증,\n소유자 신분증 사본', '휴대폰\n주인의 연락을 받을 수 있도록\n충전하여 보관',
+       '포털 공개 항목\n품명, 색상, 상표, 보관 장소\n그 외는 대장에만 기재'].forEach(function (t) {
+        var i = t.indexOf('\n'), r = el('div', 'nrow'); r.appendChild(el('b', null, t.slice(0, i))); r.appendChild(el('span', null, t.slice(i))); box.appendChild(r);
+      });
+      return [w];
+    },
+    ledger: function (opt) {                          // open green ledger: what the portal shows on the left page, what only we know on the right
+      var w = sheet('p_ledger'), tops = [36, 66, 104], hs = [27, 35, 44];
+      ink(w, 'fs-s lhead', '습득물', 10, 22, 56); ink(w, 'fs-s lhead', '특징·내용물 (비공개)', 77, 22, 58);
+      LEDGER.forEach(function (r, i) {
+        ink(w, 'fs-s lcell', 'No.' + r.no + '  ' + r.when + '\n' + r.where + '\n' + r.what, 10, tops[i], 56);
+        ink(w, 'fs-s lcell priv', r.priv, 77, tops[i], 58);
+        var ln = el('div', 'lline'); ln.style.top = 'calc(var(--u) * ' + (tops[i] - 2) + ')'; w.appendChild(ln);
+        if (opt && opt.hit === r.no) { var h = el('div', 'lhit'); h.style.top = 'calc(var(--u) * ' + (tops[i] - 1) + ')'; h.style.height = 'calc(var(--u) * ' + hs[i] + ')'; w.appendChild(h); }
+      });
+      return [w, el('div', 'proptext fs-s', '색상·상표까지만 포털에 공개된다.\n습득 장소와 특징은 여기에만 있다.')];
+    },
+    receipt: function (o) {                           // clipboard: the person signs it by hand, stroke by stroke
+      var p = sheet('p_receipt');
+      ink(p, 'fs rttl', '수령 대장', 16, 26, 112);
+      ink(p, 'fs-s', o.item + '\n일시  ' + o.when, 16, 42, 112);
+      ink(p, 'fs-s k', '서명' + (o.note ? ' (' + o.note + ')' : ''), 16, 70, 112);
+      var c = el('canvas', 'signcv'); c.width = 118; c.height = 46; p.appendChild(c);
+      var ln = el('div', 'signline'); p.appendChild(ln);
+      var x = c.getContext('2d'); x.fillStyle = '#1c2a66';
+      var st = PEN[o.name] || PEN._, path = signPath(o.name, st), si = 0, pi = 0;
+      function dot(px, py) { x.fillRect(Math.round(px), Math.round(py), 1, 1); x.fillRect(Math.round(px) + 1, Math.round(py), 1, 1); }
+      docBusy = true;
+      (function pen() {
+        if (si >= path.length) return docDone();
+        var seg = path[si], wait = 16;
+        for (var k = 0; k < st.speed && pi < seg.pts.length; k++, pi++) dot(seg.pts[pi][0], seg.pts[pi][1]);
+        if (pi >= seg.pts.length) {                   // pen lifts: short between strokes, longer between letters
+          wait = seg.last ? st.lift * 3 : st.lift; si++; pi = 0;
+          try { if (navigator.vibrate) navigator.vibrate(2); } catch (e) {}
+        }
+        docTimer = setTimeout(pen, si === 0 && pi <= st.speed ? 600 : wait);
+      })();
+      docFinish = function () {
+        clearTimeout(docTimer);
+        for (; si < path.length; si++, pi = 0) for (; pi < path[si].pts.length; pi++) dot(path[si].pts[pi][0], path[si].pts[pi][1]);
+        docDone();
+      };
+      return [p];
+    },
+    papers: function () {
+      var a = el('div', 'paper fs-s'); a.appendChild(el('h3', null, '위 임 장'));
+      a.appendChild(el('div', null, '위임인  윤서연\n수임인  강민재\n\n위 사람에게 유실물(휴대폰)의\n수령을 위임합니다.')); a.appendChild(sigRow('서명', '윤서연'));
+      var b = el('div', 'paper fs-s idc'); b.appendChild(el('i')); b.appendChild(el('div', null, '주민등록증\n강 민 재'));
+      var c = el('div', 'paper fs-s idc'); c.appendChild(el('i')); c.appendChild(el('div', null, '그의 휴대폰 화면\n윤서연 신분증 사진'));
+      return [a, b, c];
+    },
+    msg: function () {
+      var p = el('div', 'phone fs-s'); p.appendChild(el('div', 'nm', '서연♥'));
+      p.appendChild(el('div', 'bub', '오빠가 대신 찾아줘.\n서류는 가방에 넣어놨어')); p.appendChild(el('div', 'tm', '오늘 오후 2:10')); return [p];
+    },
+    calling: function () {
+      try { if (navigator.vibrate) navigator.vibrate([260, 180, 260, 180, 260]); } catch (e) {}
+      return [screen('call', 'call', [['dim', '전화 수신 중', 43], ['big', '언니', 113]])];
+    },
+    lock: function () { return [screen('lock', 'lock', [['card', '부재중 전화 42\n언니', 24], ['card', '전송되지 않은 메시지 1건\n화 23:47', 64]])]; },
+    card: function (o) {                              // a hand holds the card in through the gap under the shutter
+      var w = sheet('p_card');
+      if (o && o.slam) { w.classList.add('slam'); jolt(450); }
+      ink(w, 'fs-s cardt', '서평경찰서 실종수사팀', 32, 129, 94);
+      ink(w, 'fs cardt', '경위  백 도 현', 32, 144, 94);
+      return [w];
+    }
+  };
+
+  // ------------------------------------------------------------------ script
+  var ME = '한지우', MS = '오말순', TH = '정태호', MJ = '강민재', SJ = '윤서진', DH = '백도현';
+  var F, ASK, queue, mode, typing, fullText, typeTimer, talkTimer, curAsk;
+
+  var QSETS = {
+    taeho: [
+      { label: '신분증 이름이 뭐죠?', short: '신분증 이름', cut: 'P2', flag: 'TH_NAME', steps: [
+        { t: 'say', who: ME, text: '지갑 안 신분증에 적힌\n성함이 어떻게 되죠?' },
+        { t: 'say', who: TH, text: '정태호요.' },
+        { t: 'say', who: ME, text: '신분증은 다른 분\n성함인데요.' },
+        { t: 'say', who: TH, text: '…^아.', face: 'P2', spd: 150 },
+        { t: 'say', who: TH, text: '형 겁니다.\n형이 부탁해서 온 거예요.', face: 'E0', ms: 150 } ] },
+      { label: '안에 뭐가 들어 있었죠?', short: '내용물', cut: 'P2', steps: [
+        { t: 'say', who: ME, text: '안에 뭐가\n들어 있었죠?' },
+        { t: 'say', who: TH, text: '카드하고 현금 좀\n있을 겁니다.', face: 'P2' },
+        { t: 'fx', face: 'E0' } ] },
+      { label: '언제 어디서 잃어버렸죠?', short: '언제 어디서', steps: [
+        { t: 'say', who: ME, text: '언제 어디서\n잃어버리셨어요?' },
+        { t: 'say', who: TH, text: '이 역에서요. 어제쯤.' } ] },
+      { label: '다른 특징이 있나요?', short: '다른 특징', steps: [
+        { t: 'say', who: ME, text: '지갑에 다른 특징이\n있나요?' },
+        { t: 'say', who: TH, text: '갈색이고, 브렌트고.' },
+        { t: 'say', who: TH, text: '그게 특징이죠.' } ] },
+      { label: '위임장은 가져오셨어요?', short: '위임장', cut: 'B4', steps: [
+        { t: 'say', who: ME, text: '대리 수령이시면\n위임장 가져오셨어요?' },
+        { t: 'say', who: TH, text: '가족인데 그런 게\n필요합니까?', face: 'B4', ms: 120 },
+        { t: 'fx', face: 'E0', ms: 150 } ] }
+    ],
+    seojin: [
+      { label: '경찰에서는 뭐라고 하던가요?', short: '경찰', steps: [
+        { t: 'say', who: ME, text: '경찰에서는 뭐라고\n하던가요?' },
+        { t: 'say', who: SJ, text: '휴대폰 신호가 화요일 밤\n이 역에서 멈췄대요.' },
+        { t: 'say', who: SJ, text: '꺼진 게 아니라\n그냥 안 움직인대요.' },
+        { t: 'say', who: SJ, text: '그 말 듣고\n포털을 뒤졌어요.' } ] },
+      { label: '휴대폰을 두고 다니는 편인가요?', short: '두고 다니나', steps: [
+        { t: 'say', who: ME, text: '동생분이 휴대폰을\n두고 다니는 편인가요?' },
+        { t: 'say', who: SJ, text: '아니요.' },
+        { t: 'say', who: SJ, text: '걔는 화장실 갈 때도\n들고 가요.' } ] },
+      { label: '마지막으로 뭐라고 하셨어요?', short: '마지막 말', cut: 'P1', steps: [
+        { t: 'say', who: ME, text: '동생분이 마지막으로\n뭐라고 하셨어요?' },
+        { t: 'say', who: SJ, text: '이사 가고 싶다고요.' },
+        { t: 'say', who: SJ, text: '누가 자꾸 집 앞에\n서 있다고.' },
+        { t: 'say', who: SJ, text: '저는…^^ 네가 예민한\n거라고 했어요.', face: 'P1', spd: 70 },
+        { t: 'fx', face: 'E0' } ] },
+      { label: '담당 형사와 연락이 되세요?', short: '담당 형사', steps: [
+        { t: 'say', who: ME, text: '담당 형사분과는\n연락이 되세요?' },
+        { t: 'say', who: SJ, text: '백도현 경위님이요.' },
+        { t: 'say', who: SJ, text: '낮에 전화했는데\n현장에 나가셨대요.' },
+        { t: 'say', who: SJ, text: '문자는 남겼어요.' } ] },
+      { label: '잠금화면 알림을 본다', short: '잠금화면', cut: 'lock', flag: 'PEEK', steps: [
+        { t: 'doc', id: 'lock' } ] }
+    ],
+    minjae: [
+      { label: '잠금을 풀 수 있으세요?', short: '잠금', steps: [
+        { t: 'say', who: ME, text: '잠금을 풀 수 있으세요?' },
+        { t: 'say', who: MJ, text: '네. 0412.' },
+        { t: 'say', who: MJ, text: '풀어드릴까요?' } ] },
+      { label: '어디서 잃어버리셨대요?', short: '잃어버린 곳', flag: 'ASK_WHERE', steps: [
+        { t: 'say', who: ME, text: '어디서 잃어버리셨다고\n하던가요?' },
+        { t: 'say', who: MJ, text: '승강장에서요.' },
+        { t: 'say', who: MJ, text: '7-4 쪽 벤치\n근처라던데요.' },
+        { t: 'doc', id: 'ledger', opt: { hit: 6 } } ] },
+      { label: '본인은 왜 못 오시죠?', short: '못 오는 이유', cut: 'B4', steps: [
+        { t: 'say', who: ME, text: '본인은 왜 못 오시죠?' },
+        { t: 'say', who: MJ, text: '아파서요. 요 며칠.' },
+        { t: 'say', who: MJ, text: '제가 다 챙깁니다.', face: 'B4' },
+        { t: 'fx', face: 'E0' } ] },
+      { label: '본인과 통화할 수 있나요?', short: '통화', cut: 'B4', flag: 'ASK_CALL', steps: [
+        { t: 'say', who: ME, text: '본인과 통화할 수\n있을까요?' },
+        { t: 'say', who: MJ, text: '휴대폰이 여기 있는데요.', face: 'B4' },
+        { t: 'say', who: MJ, text: '대신 이거.', face: 'E0' },
+        { t: 'doc', id: 'msg' } ] },
+      { label: '두 분은 어떤 관계시죠?', short: '관계', cut: 'B4', steps: [
+        { t: 'say', who: ME, text: '두 분은 어떤\n관계시죠?' },
+        { t: 'say', who: MJ, text: '남자친구요.' },
+        { t: 'say', who: MJ, text: '언니가^ 다녀갔죠?', face: 'B4', ms: 420, spd: 95 },
+        { t: 'say', who: MJ, text: '닮았어요,^ 둘이.', spd: 95 },
+        { t: 'fx', face: 'E0', ms: 420 } ] }
+    ]
+  };
+
+  function sOpen() {
+    return [
+      { t: 'save', id: 'sOpen' },
+      { t: 'cap', lines: [['', '서평역 유실물 센터'], ['dim', '금요일 17:20'], ['red', '마감까지 40분']] },
+      { t: 'bg', name: 'bg', time: '17:20', clock: '금 17:20' },
+      { t: 'say', who: null, text: '통로의 형광등 하나가\n아까부터 깜빡인다.' },
+      { t: 'say', who: null, text: '이 일을 시작한 지\n2주째다.' },
+      { t: 'doc', id: 'memo' },
+      { t: 'say', who: null, text: '오늘은 혼자다.' },
+      { t: 'say', who: null, text: '6시까지만 버티면 된다.' },
+      { t: 'doc', id: 'notice' },
+      { t: 'say', who: null, text: '규정은 간단하다.\n귀중품은 본인에게만.' },
+      { t: 'doc', id: 'ledger' },
+      { t: 'say', who: null, text: '서랍에는 세 가지가 있다.\n우산, 지갑, 휴대폰.' },
+      { t: 'say', who: null, text: '창구 벨이 울린다.' },
+      { t: 'run', fn: sMalsun }
+    ];
+  }
+  function sMalsun() {
+    return [
+      { t: 'save', id: 'sMalsun' },
+      { t: 'bg', name: 'bg', time: '17:22', clock: '금 17:22' },
+      { t: 'enter', ch: 'malsun' },
+      { t: 'say', who: MS, text: '우산 찾으러 왔어요.' },
+      { t: 'say', who: MS, text: '검정. 접는 거.' },
+      { t: 'act', label: '서랍을 연다' },
+      { t: 'doc', id: 'drawer', opt: { pick: 3, text: '3번 칸.' } },
+      { t: 'run', fn: function () { F.UMB = 1; return []; } },
+      { t: 'doc', id: 'prop', opt: { name: 'umbrella', text: '손잡이에 테이프를 감은\n낡은 우산.' } },
+      { t: 'say', who: null, text: '3번. 검정 접이식 우산.\n확인할 것은 없다.' },
+      { t: 'act', label: '수령 대장을 내민다' },
+      { t: 'doc', id: 'receipt', opt: { item: 'No.3  접이식 우산 · 검정', name: '오말순', when: '금 17:24' } },
+      { t: 'say', who: MS, text: '고마워요.' },
+      { t: 'say', who: MS, text: '저기 계단참에\n젊은 남자가 서있더라.', face: 'P1' },
+      { t: 'say', who: MS, text: '아무래도 아가씨\n좋아하는 거 같은데?', face: 'A4', ms: 200 },
+      { t: 'exit' },
+      { t: 'bg', name: 'landing', clock: '금 17:25' },
+      { t: 'say', who: null, text: '휴대폰을 보며\n서 있는 사람.' },
+      { t: 'say', who: null, text: '퇴근 시간이다.\n누굴 기다리는 사람은 많다.' },
+      { t: 'say', who: null, text: '…아까부터^ 있었던가.', spd: 70 },
+      { t: 'run', fn: sTaeho }
+    ];
+  }
+  function sTaeho() {
+    return [
+      { t: 'save', id: 'sTaeho' },
+      { t: 'cap', cp: sTaeho, lines: [['dim', '금요일 17:28'], ['red', '마감까지 32분']] },
+      { t: 'bg', name: 'bg', time: '17:28', clock: '금 17:28' },
+      { t: 'enter', ch: 'taeho' },
+      { t: 'say', who: TH, text: '지갑 찾으러 왔는데요.' },
+      { t: 'say', who: TH, text: '갈색 브렌트 지갑이에요.' },
+      { t: 'say', who: ME, text: '확인해 보겠습니다.', face: 'P1' },
+      { t: 'act', label: '서랍을 연다' },
+      { t: 'doc', id: 'drawer', opt: { pick: 5, text: '5번 칸.' } },
+      { t: 'fx', face: 'E0' },
+      { t: 'doc', id: 'prop', opt: { name: 'wallet', text: '서랍 안의 지갑.\n카드 두 장, 현금은 없다.' } },
+      { t: 'say', who: null, text: '지갑은 귀중품이다.\n본인인지 확인해야 한다.' },
+      { t: 'say', who: null, text: '질문은 세 번이면 된다.\n박 주임이 그렇게 가르쳤다.' },
+      { t: 'ask', set: 'taeho' }
+    ];
+  }
+  function afterAsk(set) {
+    if (set === 'taeho') return [
+      { t: 'say', who: null, text: '들은 것과 대장을\n맞춰 본다.' },
+      { t: 'say', who: TH, text: '바쁜데 빨리 좀\n주시죠.' },
+      { t: 'decide', set: 'taeho' } ];
+    if (set === 'seojin') return [
+      { t: 'say', who: null, text: '내주면 규정 위반이다.\n안 내주면…^ 모르겠다.' },
+      { t: 'say', who: SJ, text: '시간이 없어요.', face: 'B4', ms: 160 },
+      { t: 'decide', set: 'seojin' } ];
+    return [
+      { t: 'say', who: null, text: '규정대로라면\n내줘야 한다.' },
+      { t: 'say', who: MJ, text: '마감이 6시죠.' },
+      { t: 'say', who: MJ, text: '서류에 빠진 게\n있습니까?' },
+      { t: 'decide', set: 'minjae' } ];
+  }
+  function outcome(set, c) {
+    if (set === 'taeho') {
+      F.WAL = c === 'give' ? 1 : 0; F.walChoice = c;
+      if (c === 'give') return [
+        { t: 'doc', id: 'receipt', opt: { item: 'No.5  반지갑 · 갈색 · 브렌트', name: '정태호', when: '금 17:33' } },
+        { t: 'say', who: null, text: '그는 지갑을 낚아채듯\n받아 간다.' },
+        { t: 'exit' },
+        { t: 'say', who: null, text: '…맞게 한 걸까.', spd: 80 },
+        { t: 'bg', name: 'bg', time: '17:33', clock: '금 17:33' },
+        { t: 'say', who: null, text: '전화벨이 울린다.' },
+        { t: 'say', who: '전화', text: '김○○인데요.' },
+        { t: 'say', who: '전화', text: '포털에 제 지갑이\n서평역에 있다고\n올라와 있던데요.' },
+        { t: 'say', who: '전화', text: '방금 서평역 편의점에서\n제 카드로 결제됐다고\n문자가 왔어요.' },
+        { t: 'say', who: null, text: '…그 사람은^\n주인이 아니었다.', spd: 70 },
+        { t: 'over', lines: [['', '지갑은 주인에게\n돌아가지 못했다.']] } ];
+      return [
+        { t: 'say', who: ME, text: c === 'hold' ? '본인이 직접 오시면\n내드리겠습니다.' : '본인 확인이 안 되면\n내드릴 수 없습니다.' },
+        { t: 'say', who: TH, text: '…포털에는 그런 얘기\n없었는데.', face: 'B4', ms: 130 },
+        { t: 'exit' },
+        { t: 'say', who: null, text: '포털.' , spd: 120 },
+        { t: 'say', who: null, text: '포털에는 색상과 상표만\n올라간다.' }, { t: 'run', fn: sSeojin } ];
+    }
+    if (set === 'seojin') {
+      F.sjChoice = c;
+      if (c === 'give') {
+        F.PHONE = '언니';
+        return [
+          { t: 'say', who: null, text: '규정 위반이다.' },
+          { t: 'say', who: null, text: '그래도 이게\n맞는 것 같다.' },
+          { t: 'doc', id: 'receipt', opt: { item: 'No.6  휴대폰 · 검정 · 오르비', name: '윤서진', note: '가족', when: '금 17:44' } },
+          { t: 'say', who: SJ, text: '감사합니다.', face: 'E0', ms: 160 },
+          { t: 'say', who: SJ, text: '경찰서로 바로 갈게요.' },
+          { t: 'exit' }, { t: 'run', fn: sMinjae } ];
+      }
+      F.STICKER = 1;
+      return [
+        { t: 'say', who: ME, text: '죄송합니다. 규정상\n내드릴 수 없습니다.', face: 'E0', ms: 160 },
+        { t: 'say', who: SJ, text: '…그럼 서류만 맞으면\n아무한테나 주는 거네요.', face: 'P1' },
+        { t: 'say', who: null, text: '서류만 맞으면,^ 아무한테나.', spd: 70 },
+        { t: 'say', who: ME, text: '경찰에서 요청하면\n바로 인계합니다.', face: 'E0' },
+        { t: 'say', who: ME, text: '담당 형사분께 여기 있다고\n전해주세요.' },
+        { t: 'doc', id: 'stick' },
+        { t: 'say', who: SJ, text: '지금 경찰서로 갈게요.' },
+        { t: 'say', who: SJ, text: '그때까지 다른 사람한테\n주지 마세요.' },
+        { t: 'say', who: SJ, text: '부탁이에요.', face: 'B4', ms: 160, spd: 90 },
+        { t: 'exit' },
+        { t: 'say', who: null, text: '내가 할 수 있는 건\n여기까지다.' },
+        { t: 'run', fn: sMinjae } ];
+    }
+    F.PHONE = c === 'give' ? '민재' : '센터'; F.mjChoice = c;
+    if (c === 'give') return [
+      { t: 'doc', id: 'receipt', opt: { item: 'No.6  휴대폰 · 검정 · 오르비', name: '강민재', note: '대리인', when: '금 17:58' } },
+      { t: 'say', who: MJ, text: '감사합니다.\n친절하시네요.', face: 'B4' },
+      { t: 'exit' },
+      { t: 'say', who: null, text: '규정대로 했다.' },
+      { t: 'say', who: null, text: '그런데 왜^\n개운하지 않을까.', spd: 60 }, { t: 'run', fn: sClose } ];
+    return [
+      { t: 'say', who: ME, text: c === 'hold' ? '본인 확인이 될 때까지\n보관하겠습니다.' : '본인 확인이 되면\n내드리겠습니다.' },
+      { t: 'say', who: MJ, text: '규정이 그렇다면요.', face: 'A4', ms: 300 },
+      { t: 'say', who: MJ, text: '…한.^ 지.^ 우 씨.', face: 'C4', ms: 300, spd: 130 },
+      { t: 'say', who: MJ, text: '수고하세요.' },
+      { t: 'exit' },
+      { t: 'say', who: null, text: '…명찰.', spd: 110 },
+      { t: 'say', who: null, text: '명찰을 본 것뿐이다.^\n그런데 왜 소름이 돋지.' }, { t: 'run', fn: sClose } ];
+  }
+  function sSeojin() {
+    return [
+      { t: 'save', id: 'sSeojin' },
+      { t: 'cap', cp: sSeojin, lines: [['dim', '금요일 17:35'], ['red', '마감까지 25분']] },
+      { t: 'bg', name: 'bg', time: '17:35', clock: '금 17:35' },
+      { t: 'enter', ch: 'seojin' },
+      { t: 'say', who: SJ, text: '포털에서 봤어요.' },
+      { t: 'say', who: SJ, text: '수요일에 들어온\n검정색 오르비 휴대폰.' },
+      { t: 'say', who: SJ, text: '제 동생 걸 수도\n있어서요.' },
+      { t: 'doc', id: 'prop', opt: { name: 'photo', text: '그녀가 유리에 댄 사진.' } },
+      { t: 'say', who: SJ, text: '화요일 밤부터\n연락이 안 돼요.' },
+      { t: 'say', who: SJ, text: '실종 신고는 했는데,\n성인이니까 기다려보래요.' },
+      { t: 'say', who: null, text: '그녀가 전화를 건다.', face: 'P1' },
+      { t: 'ring' },
+      { t: 'say', who: null, text: '서랍 안에서\n진동이 울린다.' },
+      { t: 'act', label: '서랍을 연다' },
+      { t: 'doc', id: 'drawer', opt: { pick: 6, buzz: true, text: '6번 칸.' } },
+      { t: 'doc', id: 'calling' },
+      { t: 'say', who: null, text: '맞다.', spd: 130 },
+      { t: 'say', who: null, text: '이 휴대폰의 주인은\n지금 여기 없다.' },
+      { t: 'say', who: SJ, text: '…이걸 들고 가야\n경찰이 움직여요.', face: 'E0', ms: 120 },
+      { t: 'say', who: SJ, text: '주세요.', face: 'B4', ms: 160 },
+      { t: 'say', who: ME, text: '가족이셔도 본인이 아니면\n위임장이 있어야 합니다.' },
+      { t: 'say', who: SJ, text: '본인이 없어졌는데\n위임장을 어떻게 받아요.' },
+      { t: 'fx', face: 'E0', ms: 160 },
+      { t: 'say', who: null, text: '틀린 말이 아니다.' },
+      { t: 'say', who: null, text: '그래도 규정은 규정이다.^\n…정말 그런가.' },
+      { t: 'ask', set: 'seojin' }
+    ];
+  }
+  function sMinjae() {
+    var s = [
+      { t: 'save', id: 'sMinjae' },
+      { t: 'cap', cp: sMinjae, lines: [['dim', '금요일 17:50'], ['red', '마감까지 10분']] },
+      { t: 'bg', name: 'bg_empty', time: '17:50', clock: '금 17:50' },
+      { t: 'say', who: null, text: '계단참이 비어 있다.' },
+      { t: 'say', who: null, text: '마감까지 10분.\n더 올 사람은 없을 줄 알았다.' },
+      { t: 'enter', ch: 'minjae' },
+      { t: 'say', who: MJ, text: '마감 전에 죄송합니다.' },
+      { t: 'say', who: MJ, text: '포털에 올라온 휴대폰을\n찾으러 왔어요.' },
+      { t: 'say', who: MJ, text: '여자친구 건데\n본인이 못 와서요.' }
+    ];
+    if (F.PHONE === '언니') {                         // the sister already has it
+      var tail = function (told) {
+        return [
+          { t: 'say', who: MJ, text: '그렇군요.', face: told ? 'B4' : 'A4', ms: 300 },
+          { t: 'say', who: MJ, text: '수고하세요.^^\n한.^ 지.^ 우 씨.', face: 'C4', ms: 300, spd: 130 },
+          { t: 'exit' },
+          { t: 'say', who: null, text: '…명찰.', spd: 110 },
+          { t: 'say', who: null, text: told ? '말하지 말 걸 그랬나.' : '그는 누가 가져갔는지\n이미 아는 얼굴이었다.' },
+          { t: 'run', fn: sClose } ];
+      };
+      s.push(
+        { t: 'say', who: ME, text: '그 휴대폰은 조금 전에\n인도됐습니다.' },
+        { t: 'say', who: MJ, text: '…누가^ 가져갔습니까?', face: 'A4', ms: 200, spd: 95 },
+        { t: 'choose', opts: [
+          { label: '가족분이 가져가셨습니다', go: function () { F.TOLD = 1; return tail(true); } },
+          { label: '말씀드릴 수 없습니다', go: function () { return tail(false); } } ] });
+      return s;
+    }
+    s.push(
+      { t: 'doc', id: 'papers' },
+      { t: 'say', who: null, text: '서류는 빠진 게 없다.' },
+      { t: 'say', who: null, text: '오늘 처음으로\n규정대로인 사람이 왔다.' },
+      { t: 'say', who: MJ, text: '검정색 오르비,\n투명 케이스,\n뒤에 고양이 스티커.' },
+      { t: 'act', label: '서랍을 연다' },
+      { t: 'doc', id: 'drawer', opt: { pick: 6, text: '6번 칸.' } },
+      { t: 'doc', id: 'prop', opt: { name: 'phone_back', sticker: !!F.STICKER, text: F.STICKER ? '맞다.\n내가 붙인 스티커가\n그대로 있다.' : '맞다.' } },
+      { t: 'say', who: MJ, text: '액정 왼쪽 아래에\n금이 갔고요.' },
+      { t: 'doc', id: 'prop', opt: { name: 'phone_front', text: '이것도 맞다.' } },
+      { t: 'say', who: null, text: '전부 맞다.' },
+      { t: 'say', who: null, text: '그런데 왜^ 선뜻\n내주고 싶지 않을까.', spd: 60 },
+      { t: 'ask', set: 'minjae' });
+    return s;
+  }
+  function sClose() {
+    var s = [
+      { t: 'save', id: 'sClose' },
+      { t: 'bg', name: 'bg_empty', time: '17:59', clock: '금 17:59' },
+      { t: 'say', who: null, text: '5시 59분.' },
+      { t: 'say', who: null, text: '오늘 네 사람이\n다녀갔다.' }];
+    s.push(
+      { t: 'say', who: null, text: F.PHONE === '센터' ? '휴대폰은 아직\n서랍에 있다.' : '서랍의 6번 칸이\n비어 있다.' },
+      { t: 'say', who: null, text: '내가 맞게 한 걸까.', spd: 70 },
+      { t: 'say', who: null, text: '6시다.\n셔터를 내릴 시간이다.' },
+      { t: 'act', label: '셔터 스위치를 누른다' },
+      { t: 'shutter' },
+      { t: 'say', who: null, text: '셔터가 천천히\n내려온다.' },
+      { t: 'say', who: '목소리', text: '잠깐만요!', shake: 700, spd: 55 },
+      { t: 'doc', id: 'card', opt: { slam: true } },
+      { t: 'enter', ch: 'dohyeon' },
+      { t: 'say', who: DH, text: '마감하셨는데\n죄송합니다.' },
+      { t: 'say', who: DH, text: '방금 윤서진 씨가\n서에 다녀갔습니다.' },
+      { t: 'say', who: DH, text: '오늘,^^ 그 휴대폰\n찾으러 온 사람이\n또^ 있었습니까?', spd: 85 },
+      { t: 'end' });
+    return s;
+  }
+
+  // ------------------------------------------------------------------ engine
+  function freshState() {
+    F = { WAL: 0, PHONE: '센터', ASK_WHERE: 0, ASK_CALL: 0, TH_NAME: 0, PEEK: 0, STICKER: 0, TOLD: 0, UMB: 0, walChoice: null, sjChoice: null, mjChoice: null };
+    ASK = { taeho: { asked: [], left: 3 }, seojin: { asked: [], left: 3 }, minjae: { asked: [], left: 3 } };
+    P.token++; P.ch = null; show(win, false); B.name = null; B.flicker = false; B.close = false; zoom(1); drawBg(); clockEl.textContent = ''; curAsk = null;
+  }
+  // ---- progress kept on this device: one save slot (start of the current scene) and what has been finished
+  var SAVE = 'c3-save-v1', META = 'c3-meta-v1';
+  function store(k, v) { try { if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function load(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+  var SCENE = { sOpen: ['금요일 17:20', '오프닝'], sMalsun: ['금요일 17:22', '우산'], sTaeho: ['금요일 17:28', '지갑'], sSeojin: ['금요일 17:35', '휴대폰'], sMinjae: ['금요일 17:50', '휴대폰'], sClose: ['금요일 17:59', '마감'] };
+  function sceneFn(id) { return { sOpen: sOpen, sMalsun: sMalsun, sTaeho: sTaeho, sSeojin: sSeojin, sMinjae: sMinjae, sClose: sClose }[id]; }
+  function saveGame(id) { store(SAVE, { ep: 'prologue', id: id, F: F, ASK: ASK }); }
+  function start(fn) { CP = null; freshState(); queue = fn(); hideAll(); show($('menuBtn'), true); next(); }
+  function resume() {
+    var sv = load(SAVE); if (!sv || !sceneFn(sv.id)) return start(sOpen);
+    CP = null; freshState(); F = sv.F; ASK = sv.ASK; queue = sceneFn(sv.id)(); hideAll(); show($('menuBtn'), true); next();
+  }
+  function openMenu() {                              // only while the game is waiting for the player
+    if (['say', 'ask', 'act', 'decide', 'choose'].indexOf(mode) < 0) return;
+    var m = $('menu'); m.textContent = ''; show(m, true);
+    m.appendChild(el('div', 'mt fs-s', '잠시 멈춤'));
+    var c = el('button', null, '계속하기'); onPress(c, function () { show(m, false); }); m.appendChild(c);
+    var h = el('button', null, '홈으로'); onPress(h, function () { show(m, false); clearTimeout(typeTimer); clearInterval(talkTimer); typing = false; title(); }); m.appendChild(h);
+    m.appendChild(el('div', 'note fs-s', '이 장면의 처음이 저장되어 있습니다.\n홈에서 이어할 수 있습니다.'));
+  }
+  function hideAll() { show($('early'), false); show(dlg, false); show(tapHint, false); show(pick, false); ov.className = 'fs hide'; ov.textContent = ''; clearTimeout(docTimer); stage.classList.remove('shake'); }
+  function setHud() {
+    qleft.textContent = '';
+    if (curAsk && (mode === 'ask' || mode === 'say')) {
+      qleft.appendChild(document.createTextNode('질문 ')); qleft.appendChild(el('b', null, String(ASK[curAsk].left))); qleft.appendChild(document.createTextNode(' 남음'));
+    }
+  }
+  function next() {
+    var s = queue.shift();
+    if (!s) return;
+    if (s.t === 'fx') { if (s.face) faceTo(s.face, s.ms); return next(); }
+    if (s.t === 'save') { saveGame(s.id); return next(); }
+    if (s.t === 'run') { queue = s.fn().concat(queue); return next(); }
+    if (s.t === 'bg') {
+      B.name = s.name; B.time = s.time || ''; B.close = false; zoom(1); if (s.name === 'bg' || s.name === 'bg_empty') B.last = s.name; B.flicker = s.name === 'bg' || s.name === 'bg_empty'; B.dim = false; drawBg();
+      if (s.clock) clockEl.textContent = s.clock;
+      return next();
+    }
+    hideAll(); mode = s.t;
+    if (s.t === 'shutter') {                         // comes down in three heavy steps and stops halfway
+      mode = 'wait'; B.flicker = false; B.dim = false; clockEl.textContent = '금 18:00'; B.time = '18:00';
+      var fr = ['bg_shut1', 'bg_shut2', 'bg_shutter'], k = 0;
+      return (function drop() {
+        B.name = fr[k]; drawBg();
+        bgc.style.transform = 'translateY(calc(var(--u) * 1))'; setTimeout(function () { bgc.style.transform = ''; }, 70);
+        if (++k < fr.length) setTimeout(drop, 520); else setTimeout(next, 600);
+      })();
+    }
+    if (s.t === 'ring') {                            // dial tone twice, then the drawer answers
+      mode = 'wait'; var rg = $('ring'); rg.textContent = ''; show(rg, true);
+      var tone = el('div', 'tone', ''); rg.appendChild(tone);
+      var beats = [[500, function () { tone.textContent = '뚜르르르'; }], [1500, function () { tone.textContent = ''; }], [1900, function () { tone.textContent = '뚜르르르'; }],
+        [2700, function () {
+          rg.appendChild(el('div', 'bz', '지이이잉')); stage.classList.add('shake'); faceTo('A4', 90);
+          try { if (navigator.vibrate) navigator.vibrate([300, 200, 300, 200, 300]); } catch (e) {}
+        }],
+        [3100, function () { stage.classList.remove('shake'); }], [3500, function () { stage.classList.add('shake'); }], [3900, function () { stage.classList.remove('shake'); }],
+        [4500, function () { show(rg, false); rg.textContent = ''; next(); }]];
+      beats.forEach(function (b) { setTimeout(b[1], b[0]); });
+      return;
+    }
+    if (s.t === 'enter') { mode = 'wait'; return enter(s.ch, next); }
+    if (s.t === 'exit') { mode = 'wait'; curAsk = null; setHud(); return leave(next); }
+    if (s.t === 'cap') { if (s.cp) CP = { fn: s.cp, F: JSON.stringify(F), ASK: JSON.stringify(ASK), label: s.lines[0][1] }; return cap(s); }
+    if (s.t === 'over') return over(s);
+    if (s.t === 'say') return say(s);
+    if (s.t === 'doc') return doc(s);
+    if (s.t === 'act') return act(s);
+    if (s.t === 'choose') return choose(s);
+    if (s.t === 'ask') return ask(s.set);
+    if (s.t === 'decide') return decide(s.set);
+    if (s.t === 'end') return end();
+  }
+  var CP = null;                                     // last black caption passed: where "다시 하기" returns to
+  function over(s) {
+    mode = 'over'; curAsk = null; setHud();
+    P.token++; P.ch = null; show(win, false); B.close = false;
+    show(ov, true); ov.className = 'fs over';
+    var c = el('div', 'cap'); s.lines.forEach(function (l) { var p = el('p', l[0] + ' on', l[1]); c.appendChild(p); }); ov.appendChild(c);
+    var b = el('button', null, CP ? '다시 하기 — ' + CP.label : '처음 화면으로');
+    onPress(b, function () {
+      if (!CP) return title();
+      F = JSON.parse(CP.F); ASK = JSON.parse(CP.ASK); hideAll(); queue = CP.fn(); next();
+    });
+    ov.appendChild(b);
+  }
+  var capTimers = [], capDone = true, capFinish = function () {};
+  function cap(s) {
+    show(ov, true); ov.className = 'fs';
+    var c = el('div', 'cap'), ps = [];
+    s.lines.forEach(function (l) { var p = el('p', l[0], l[1]); ps.push(p); c.appendChild(p); });
+    var sub = el('div', 'sub fs-s blink hide', '화면을 눌러 계속');
+    ov.appendChild(c); ov.appendChild(sub);
+    capDone = false; capTimers.forEach(clearTimeout); capTimers = [];
+    ps.forEach(function (p, i) { capTimers.push(setTimeout(function () { p.classList.add('on'); }, 350 + i * 800)); });
+    capTimers.push(setTimeout(function () { capDone = true; show(sub, true); }, 350 + ps.length * 800 + 300));
+    capFinish = function () { capTimers.forEach(clearTimeout); capTimers = []; ps.forEach(function (p) { p.classList.add('on'); }); capDone = true; show(sub, true); };
+  }
+  function say(s) {
+    setHud(); show(dlg, true); show(tapHint, true); show(more, false);
+    dlg.className = 'fs' + (s.who === ME ? ' me' : s.who ? '' : ' mono');
+    who.textContent = s.who || ''; show(who, !!s.who);
+    if (s.face) faceTo(s.face, s.ms);
+    if (s.gaze) gazeDown(s.gaze);
+    if (s.shake) jolt(s.shake);
+    txt.textContent = ''; typing = true;
+    var i = 0;
+    clearTimeout(typeTimer); clearInterval(talkTimer);
+    var spd = s.spd || (s.who ? 34 : 44), wait = [];
+    fullText = '';
+    s.text.split('').forEach(function (ch) {
+      if (ch === '^') { if (wait.length) wait[wait.length - 1] += 280; return; }
+      fullText += ch;
+      wait.push(spd + (/[.?!…]/.test(ch) ? Math.max(170, spd * 3) : ch === ',' ? 120 : 0));
+    });
+    (function tick() {
+      typeTimer = setTimeout(function () {
+        i++; txt.textContent = fullText.slice(0, i);
+        if (i >= fullText.length) return finishTyping();
+        tick();
+      }, i ? wait[i - 1] : spd);
+    })();
+    if (P.ch && s.who === CH[P.ch].name) {
+      var shapes = [1, 2, 1, 0, 2, 1, 2, 0], k = Math.floor(Math.random() * shapes.length);
+      talkTimer = setInterval(function () {
+        var ch = fullText.charAt(Math.max(0, i - 1));
+        P.mouth = /[\s.,?!…]/.test(ch) ? 0 : shapes[k++ % shapes.length]; draw();
+      }, 95);
+    }
+  }
+  function jolt(ms) {                                // the whole screen jumps
+    stage.classList.add('shake');
+    try { if (navigator.vibrate) navigator.vibrate([90, 60, 140]); } catch (e) {}
+    setTimeout(function () { stage.classList.remove('shake'); }, ms);
+  }
+  function finishTyping() {
+    clearTimeout(typeTimer); clearInterval(talkTimer); typing = false; txt.textContent = fullText; show(more, true);
+    if (P.mouth) { P.mouth = 0; draw(); }
+  }
+  function doc(s) {
+    show(ov, true); ov.className = 'fs doc' + (/^(prop|calling|lock|drawer|stick|memo|notice|ledger|receipt|card)$/.test(s.id) ? ' prop' : '');
+    docBusy = false; clearTimeout(docTimer); docDone = function () {};
+    docs[s.id](s.opt).forEach(function (n) { ov.appendChild(n); });
+    var sub = el('div', 'sub fs-s blink', s.id === 'drawer' ? '화면을 눌러 꺼내기' : '화면을 눌러 닫기'); ov.appendChild(sub);
+    if (docBusy) { show(sub, false); docDone = function () { docBusy = false; show(sub, true); }; }
+  }
+  function act(s) {
+    show(pick, true); pick.className = 'act'; pick.textContent = '';
+    var b = el('button', 'opt', s.label); onPress(b, next); pick.appendChild(b);
+  }
+  function choose(s) {
+    show(pick, true); pick.className = 'act'; pick.textContent = '';
+    s.opts.forEach(function (o) {
+      var b = el('button', 'opt', o.label); onPress(b, function () { queue = o.go().concat(queue); next(); }); pick.appendChild(b);
+    });
+  }
+  function ledgerBtn(back) {
+    var lb = el('button', 'ledger', '대장 보기');
+    onPress(lb, function () { queue = [{ t: 'doc', id: 'ledger' }, back].concat(queue); next(); });
+    return lb;
+  }
+  function ask(set) {
+    curAsk = set;
+    var st = ASK[set];
+    if (st.left <= 0) { queue = afterAsk(set).concat(queue); return next(); }
+    setHud(); show(pick, true); pick.className = ''; pick.textContent = '';
+    var early = $('early'); early.textContent = ''; show(early, true);
+    [['give', '내준다'], ['refuse', '거절한다']].forEach(function (o) {
+      var eb = el('button', o[0], o[1]);
+      onPress(eb, function () { queue = outcome(set, o[0]).concat(queue); next(); });
+      early.appendChild(eb);
+    });
+    var top = el('div', 'top fs-s');
+    var cnt = el('span'); cnt.appendChild(document.createTextNode('물을 수 있는 건 ')); cnt.appendChild(el('b', null, st.left + '번')); top.appendChild(cnt);
+    top.appendChild(ledgerBtn({ t: 'ask', set: set })); pick.appendChild(top);
+    QSETS[set].forEach(function (q, idx) {
+      var b = el('button', 'opt', q.label);
+      b.disabled = st.asked.indexOf(idx) >= 0;
+      onPress(b, function () {
+        st.asked.push(idx); st.left--; if (q.flag) F[q.flag] = 1;
+        queue = q.steps.concat([{ t: 'ask', set: set }], queue); next();
+      });
+      pick.appendChild(b);
+    });
+  }
+  function decide(set) {
+    setHud(); show(pick, true); pick.className = 'decide'; pick.textContent = '';
+    var top = el('div', 'top fs-s'); top.appendChild(el('span', null, set === 'taeho' ? '지갑을' : '휴대폰을'));
+    top.appendChild(ledgerBtn({ t: 'decide', set: set })); pick.appendChild(top);
+    [['give', '내준다'], ['refuse', '거절한다']].forEach(function (o) {
+      var b = el('button', 'opt ' + o[0], o[1]);
+      onPress(b, function () { queue = outcome(set, o[0]).concat(queue); next(); });
+      pick.appendChild(b);
+    });
+  }
+  var WORD = { give: '내줬다', refuse: '거절했다', hold: '보류했다' };
+  function known() {                                 // [condition, line] in order; lines that were not earned are simply absent
+    var sj = ASK.seojin.asked, mj = ASK.minjae.asked;
+    function has(a, i) { return a.indexOf(i) >= 0; }
+    return [
+      [F.PHONE === '센터', '휴대폰은 서랍에 있다. ‘경찰 인계 대기’.'],
+      [F.PHONE === '언니', '휴대폰은 언니가 경찰서로 가져갔다.'],
+      [F.PHONE === '민재', '휴대폰은 강민재가 가져갔다.'],
+      [true, '휴대폰의 주인은 윤서진의 동생이다. 화요일 밤부터 연락이 없다.'],
+      [has(sj, 0), '휴대폰 신호는 화요일 밤 이 역에서 멈췄다.'],
+      [has(sj, 1), '동생은 휴대폰을 두고 다니지 않는다.'],
+      [has(sj, 2), '동생은 누가 자꾸 집 앞에 서 있다고 했다.'],
+      [!!F.PEEK, '화요일 23:47, 보내지 못한 메시지가 있었다.'],
+      [true, '계단참에 젊은 남자가 서 있었다.'],
+      [has(mj, 0), '강민재는 잠금 번호를 알았다. 0412.'],
+      [!!F.ASK_WHERE, '강민재는 “7-4 쪽 벤치”라고 말했다. 대장에만 적힌 장소다.'],
+      [has(mj, 2), '강민재는 그녀가 아파서 못 온다고 했다.'],
+      [!!F.ASK_CALL, '강민재가 보여준 문자는 오늘 오후 2:10에 왔다. 휴대폰은 수요일부터 서랍에 있었다.'],
+      [has(mj, 4), '강민재는 언니가 다녀간 것을 알았다.'],
+      [!!F.TOLD, '나는 강민재에게 가족이 가져갔다고 말했다.'],
+      [true, '강민재는 내 이름을 안다.']
+    ].filter(function (r) { return r[0]; }).map(function (r) { return r[1]; });
+  }
+  var endTimers = [], endDone = true, endFinish = function () {};
+  function end() {
+    mode = 'known'; curAsk = null; setHud(); clockEl.textContent = '';
+    P.token++; P.ch = null; show(win, false); B.close = false; B.name = null; drawBg();
+    show(ov, true); ov.className = 'fs-s known';
+    ov.appendChild(el('div', 'khead', '금요일 18:00 · 서평역 유실물 센터'));
+    var ps = known().map(function (t) { var p = el('p', null, t); ov.appendChild(p); return p; });
+    var sub = el('div', 'sub fs-s blink hide', '화면을 눌러 계속'); ov.appendChild(sub);
+    endDone = false; endTimers.forEach(clearTimeout); endTimers = [];
+    ps.forEach(function (p, i) { endTimers.push(setTimeout(function () { p.classList.add('on'); }, 900 + i * 1300)); });
+    endFinish = function () { endTimers.forEach(clearTimeout); endTimers = []; ps.forEach(function (p) { p.classList.add('on'); }); endDone = true; show(sub, true); };
+    endTimers.push(setTimeout(endFinish, 900 + ps.length * 1300 + 400));
+  }
+  function credits() {
+    hideAll(); mode = 'credits'; show($('menuBtn'), false);
+    store(SAVE, null);
+    store(META, { prologue: { done: true, PHONE: F.PHONE, PEEK: F.PEEK, ASK_WHERE: F.ASK_WHERE, ASK_CALL: F.ASK_CALL, TOLD: F.TOLD } });
+    show(ov, true); ov.className = 'fs over';
+    var c = el('div', 'cap'); [['dim', '프롤로그 끝'], ['', '1화 「7-4」']].forEach(function (l) { c.appendChild(el('p', l[0] + ' on', l[1])); }); ov.appendChild(c);
+    var b = el('button', null, '처음 화면으로'); onPress(b, title); ov.appendChild(b);
+  }
+  var DEV = /[?&]dev\b/.test(location.search);
+  function backdrop() { B.name = 'bg'; B.last = 'bg'; B.flicker = true; B.dim = false; B.time = ''; B.close = false; drawBg(); }
+  function title() {                                 // home
+    freshState(); hideAll(); mode = 'title'; show($('menuBtn'), false); show($('menu'), false); backdrop();
+    show(ov, true); ov.className = 'fs title';
+    ov.appendChild(el('h1', null, '3번의 기회'));
+    ov.appendChild(el('div', 'ep fs-s', '모든 진실을 알 수 없습니다.\n당신만의 이야기를 만드세요.\n선택의 책임은 당신께 있습니다.'));
+    var acts = el('div', 'acts'), sv = load(SAVE), meta = load(META) || {};
+    if (sv && SCENE[sv.id] && sv.id !== 'sOpen') {
+      var c = el('button', 'main', '이어하기'); c.appendChild(el('small', null, SCENE[sv.id][0] + ' · ' + SCENE[sv.id][1]));
+      onPress(c, resume); acts.appendChild(c);
+    }
+    var n = el('button', sv && sv.id !== 'sOpen' ? '' : 'main', '처음부터'), armed = false;
+    onPress(n, function () {
+      if (sv && sv.id !== 'sOpen' && !armed) { armed = true; n.textContent = '처음부터 — 한 번 더 누르면 기록이 지워집니다'; n.style.fontSize = 'calc(var(--u) * 4.6)'; return; }
+      store(SAVE, null); start(sOpen);
+    });
+    acts.appendChild(n);
+    var e = el('button', null, '에피소드'); if (meta.prologue && meta.prologue.done) e.appendChild(el('small', null, '프롤로그 완료'));
+    onPress(e, episodes); acts.appendChild(e);
+    acts.appendChild(el('div', 'ver fs-s', '시험판 0.1'));
+    ov.appendChild(acts);
+  }
+  function episodes() {
+    hideAll(); mode = 'eps'; backdrop();
+    show(ov, true); ov.className = 'fs eps';
+    ov.appendChild(el('h2', null, '에피소드'));
+    var meta = load(META) || {}, sv = load(SAVE), done = meta.prologue && meta.prologue.done;
+    var r = el('div', 'erow'); r.appendChild(el('div', 'no fs-s', '프롤로그')); r.appendChild(el('div', 'nm', '분실물 센터'));
+    var phone = done ? { '센터': '휴대폰은 서랍에 남았다', '언니': '휴대폰은 언니가 가져갔다', '민재': '휴대폰은 강민재가 가져갔다' }[meta.prologue.PHONE] : '';
+    r.appendChild(el('div', 'st fs-s' + (done ? ' done' : ''), done ? '완료 · ' + phone : sv && sv.id !== 'sOpen' ? '진행 중 · ' + SCENE[sv.id][0] : '약 10분'));
+    var b = el('button', null, done ? '다시 하기' : '시작하기'); onPress(b, function () { store(SAVE, null); start(sOpen); }); r.appendChild(b);
+    if (done || DEV) {                                // scene select opens once the episode has been finished
+      var j = el('div', 'jrow');
+      [['우산', sMalsun], ['지갑', sTaeho], ['언니', sSeojin], ['남자', sMinjae], ['마감', sClose]].forEach(function (x) {
+        var jb = el('button', null, x[0]); onPress(jb, function () { start(x[1]); }); j.appendChild(jb);
+      });
+      r.appendChild(j);
+    }
+    ov.appendChild(r);
+    var r2 = el('div', 'erow lock'); r2.appendChild(el('div', 'no fs-s', '1화')); r2.appendChild(el('div', 'nm', '7-4'));
+    r2.appendChild(el('div', 'st fs-s', done ? '준비 중\n프롤로그의 선택이 이어집니다' : '준비 중')); ov.appendChild(r2);
+    var bk = el('button', 'back', '뒤로'); onPress(bk, title); ov.appendChild(bk);
+  }
+
+  stage.addEventListener('click', function () {
+    if (mode === 'cap') { if (!capDone) return capFinish(); return next(); }
+    if (mode === 'known') { if (!endDone) return endFinish(); return credits(); }
+    if (mode === 'doc') { if (docBusy) return docFinish(); return next(); }
+    if (mode === 'say') { if (typing) finishTyping(); else next(); }
+  });
+
+  onPress($('menuBtn'), openMenu);
+  function loaded() { if (--pendingLoads > 0) return; breathe(); autoBlink(); flickerLoop(); title(); }
+  if (document.fonts && document.fonts.load) { document.fonts.load('12px Galmuri11'); document.fonts.load('12px Galmuri9'); }
+})();
+</script>
+</body>
+</html>
