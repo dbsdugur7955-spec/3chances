@@ -152,6 +152,10 @@
   .scr.sheet .signcv { position: absolute; left: calc(var(--u) * 13); top: calc(var(--u) * 80); width: calc(var(--u) * 118); height: calc(var(--u) * 46); }
   .scr.sheet .signline { position: absolute; left: calc(var(--u) * 16); width: calc(var(--u) * 100); top: calc(var(--u) * 124); height: calc(var(--u) * .5); background: #8a8a8e; }
   .scr.sheet .ink.cardt { text-align: center; }
+  .scr.sheet .ink.ptl { text-align: center; font-size: calc(var(--u) * 8); letter-spacing: calc(var(--u) * 1); border-bottom: calc(var(--u) * .7) solid #1b1b1e; padding-bottom: calc(var(--u) * 2); }
+  .scr.sheet .psigcv { position: absolute; left: calc(var(--u) * 74); top: calc(var(--u) * 130); width: calc(var(--u) * 47.2); height: calc(var(--u) * 18.4); }
+  .scr.sheet .ink.psig { font-family: "Galmuri11", monospace; font-size: calc(var(--u) * 9); letter-spacing: calc(var(--u) * 1); color: #1c2a66; }
+  .scr.sheet .ink.cpy { color: #3a3a3c; }
   .scr .t { position: absolute; left: 0; right: 0; text-align: center; color: #e6e6df; white-space: pre-line; }
   .scr .t.big { font-family: "Galmuri11", monospace; font-size: calc(var(--u) * 15); }
   .scr .t.dim { color: #aab3c2; }
@@ -179,7 +183,7 @@
   .phone .tm { color: #8f918c; margin-top: calc(var(--u) * 2); }
   .docnote { color: #a9aba6; white-space: pre-line; margin-top: calc(var(--u) * 2); }
 
-  #ov.title, #ov.eps { justify-content: flex-start; align-items: stretch; text-align: left; background: rgba(0, 0, 0, .74); padding: calc(var(--u) * 62) calc(var(--u) * 12) 0; }
+  #ov.title, #ov.eps { justify-content: flex-start; align-items: stretch; text-align: left; background: rgba(0, 0, 0, .18); padding: calc(var(--u) * 30) calc(var(--u) * 12) 0; }
   #ov.title h1 { font-weight: normal; font-size: calc(var(--u) * 14); margin: 0; letter-spacing: calc(var(--u) * 1); }
   #ov.title .ep { color: #a9aba6; margin: calc(var(--u) * 4) 0 0; white-space: pre-line; line-height: 1.6; }
   #ov.title .acts { margin-top: auto; padding-bottom: calc(var(--u) * 16); display: flex; flex-direction: column; }
@@ -211,7 +215,7 @@
   #ov.end dd.bad { color: #c42c28; }
   #ov.known { justify-content: flex-start; align-items: stretch; text-align: left; padding: calc(var(--u) * 20) calc(var(--u) * 8) 0; }
   #ov.known .khead { color: #8f918c; margin-bottom: calc(var(--u) * 5); }
-  #ov.known p { margin: 0 0 calc(var(--u) * 3.2); opacity: 0; line-height: 1.45; color: #e6e6df; }
+  #ov.known p { margin: 0 0 calc(var(--u) * 3.2); opacity: 0; line-height: 1.45; color: #e6e6df; white-space: pre; }
   #ov.known p.on { animation: tubeOn .5s steps(1) forwards; }
   #ov.over button { margin-top: calc(var(--u) * 14); height: calc(var(--u) * 17); font-size: calc(var(--u) * 6.2); padding: 0 calc(var(--u) * 6); }
   #ov.end button { margin-top: calc(var(--u) * 8); height: calc(var(--u) * 17); font-size: calc(var(--u) * 6.2); }
@@ -234,7 +238,7 @@
 <script>
 (function () {
   'use strict';
-  var ASSETS = {"bg": ["bg_a", "bg_b", "bg_empty_a", "bg_empty_b", "bg_shut1", "bg_shut2", "bg_shutter", "landing"], "dohyeon": ["face_E0", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "malsun": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "minjae": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "face_C1", "face_C2", "face_C3", "face_C4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "eye_B4_half", "eye_B4_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "mouth_C4_1", "mouth_C4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "prop": ["call", "drawer_a", "drawer_b", "drawer_c", "lock", "p_card", "p_ledger", "p_memo", "p_notice", "p_receipt", "phone_back", "phone_front", "photo", "sticker", "umbrella", "wallet"], "seojin": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "taeho": ["face_E0", "face_B1", "face_B2", "face_B3", "face_B4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "face_P2_t1", "face_P2_t2", "face_P2_t3", "face_P2_t4", "face_P2", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_B4_1", "mouth_B4_2", "mouth_P1_1", "mouth_P1_2", "mouth_P2_1", "mouth_P2_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"]};
+  var ASSETS = {"bg": ["bg_a", "bg_b", "bg_empty_a", "bg_empty_b", "bg_shut1", "bg_shut2", "bg_shutter", "home", "landing"], "dohyeon": ["face_E0", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "malsun": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "minjae": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "face_C1", "face_C2", "face_C3", "face_C4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "eye_B4_half", "eye_B4_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "mouth_C4_1", "mouth_C4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "prop": ["call", "drawer_a", "drawer_b", "drawer_c", "lock", "p_card", "p_idcard", "p_idcopy", "p_ledger", "p_memo", "p_notice", "p_proxy", "p_receipt", "phone_back", "phone_front", "photo", "sticker", "umbrella", "wallet"], "seojin": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "taeho": ["face_E0", "face_B1", "face_B2", "face_B3", "face_B4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "face_P2_t1", "face_P2_t2", "face_P2_t3", "face_P2_t4", "face_P2", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_B4_1", "mouth_B4_2", "mouth_P1_1", "mouth_P1_2", "mouth_P2_1", "mouth_P2_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"]};
 
   // ------------------------------------------------------------------ layout + helpers
   var root = document.documentElement, stage = document.getElementById('stage');
@@ -284,7 +288,7 @@
   function drawBg() {
     bctx.fillStyle = '#000'; bctx.fillRect(0, 0, 144, 256);
     if (!B.name) return;
-    if (B.name === 'landing') { bctx.drawImage(img.bg.landing, 0, 0); return; }
+    if (B.name === 'landing' || B.name === 'home') { bctx.drawImage(img.bg[B.name], 0, 0); return; }
     var key = B.name.indexOf('bg_shut') === 0 ? B.name : B.name + (B.dim ? '_b' : '_a');
     bctx.drawImage(img.bg[key], 0, 0);
     if (B.time) drawClock(93, 166);
@@ -623,12 +627,28 @@
       };
       return [p];
     },
-    papers: function () {
-      var a = el('div', 'paper fs-s'); a.appendChild(el('h3', null, '위 임 장'));
-      a.appendChild(el('div', null, '위임인  윤서연\n수임인  강민재\n\n위 사람에게 유실물(휴대폰)의\n수령을 위임합니다.')); a.appendChild(sigRow('서명', '윤서연'));
-      var b = el('div', 'paper fs-s idc'); b.appendChild(el('i')); b.appendChild(el('div', null, '주민등록증\n강 민 재'));
-      var c = el('div', 'paper fs-s idc'); c.appendChild(el('i')); c.appendChild(el('div', null, '그의 휴대폰 화면\n윤서연 신분증 사진'));
-      return [a, b, c];
+    proxy: function () {                              // the three papers he hands over, one at a time
+      var w = sheet('p_proxy');
+      ink(w, 'fs ptl', '위 임 장', 20, 24, 104);
+      ink(w, 'fs-s', '위임인   윤서연\n수임인   강민재', 24, 54, 100);
+      ink(w, 'fs-s', '위 사람에게\n유실물(휴대폰)의 수령을\n위임합니다.', 24, 84, 100);
+      ink(w, 'fs-s k', '위임인 서명', 24, 140, 50);
+      var c = el('canvas', 'psigcv'); c.width = 118; c.height = 46; w.appendChild(c);
+      var x = c.getContext('2d'); x.fillStyle = '#1c2a66';
+      signPath('윤서연', PEN['강민재']).forEach(function (seg) { seg.pts.forEach(function (q) { x.fillRect(Math.round(q[0]), Math.round(q[1]), 2, 1); }); });
+      return [w];
+    },
+    idcard: function () {
+      var w = sheet('p_idcard');
+      ink(w, 'fs-s k', '주민등록증', 61, 73, 66);
+      ink(w, 'fs', '강 민 재', 61, 84, 66);
+      return [w];
+    },
+    idcopy: function () {
+      var w = sheet('p_idcopy');
+      ink(w, 'fs-s cpy', '주민등록증', 62, 45, 62);
+      ink(w, 'fs cpy', '윤 서 연', 62, 56, 62);
+      return [w];
     },
     msg: function () {
       var p = el('div', 'phone fs-s'); p.appendChild(el('div', 'nm', '서연♥'));
@@ -859,6 +879,9 @@
       { t: 'doc', id: 'receipt', opt: { item: 'No.6  휴대폰 · 검정 · 오르비', name: '강민재', note: '대리인', when: '금 17:58' } },
       { t: 'say', who: MJ, text: '감사합니다.\n친절하시네요.', face: 'B4' },
       { t: 'exit' },
+      { t: 'act', label: '위임장을 서류함에 넣는다' },
+      { t: 'doc', id: 'proxy' },
+      { t: 'say', who: null, text: '대리 수령 근거로\n서류함에 넣었다.' },
       { t: 'say', who: null, text: '규정대로 했다.' },
       { t: 'say', who: null, text: '그런데 왜^\n개운하지 않을까.', spd: 60 }, { t: 'run', fn: sClose } ];
     return [
@@ -931,7 +954,9 @@
       return s;
     }
     s.push(
-      { t: 'doc', id: 'papers' },
+      { t: 'doc', id: 'proxy' },
+      { t: 'doc', id: 'idcard' },
+      { t: 'doc', id: 'idcopy' },
       { t: 'say', who: null, text: '서류는 빠진 게 없다.' },
       { t: 'say', who: null, text: '오늘 처음으로\n규정대로인 사람이 왔다.' },
       { t: 'say', who: MJ, text: '검정색 오르비,\n투명 케이스,\n뒤에 고양이 스티커.' },
@@ -952,7 +977,7 @@
       { t: 'say', who: null, text: '5시 59분.' },
       { t: 'say', who: null, text: '오늘 네 사람이\n다녀갔다.' }];
     s.push(
-      { t: 'say', who: null, text: F.PHONE === '센터' ? '휴대폰은 아직\n서랍에 있다.' : '서랍의 6번 칸이\n비어 있다.' },
+      { t: 'say', who: null, text: F.PHONE === '센터' ? '휴대폰은 아직\n서랍에 있다.' : '서랍에 휴대폰은 없다.' },
       { t: 'say', who: null, text: '내가 맞게 한 걸까.', spd: 70 },
       { t: 'say', who: null, text: '6시다.\n셔터를 내릴 시간이다.' },
       { t: 'act', label: '셔터 스위치를 누른다' },
@@ -1114,7 +1139,7 @@
     if (P.mouth) { P.mouth = 0; draw(); }
   }
   function doc(s) {
-    show(ov, true); ov.className = 'fs doc' + (/^(prop|calling|lock|drawer|stick|memo|notice|ledger|receipt|card)$/.test(s.id) ? ' prop' : '');
+    show(ov, true); ov.className = 'fs doc' + (/^(prop|calling|lock|drawer|stick|memo|notice|ledger|receipt|card|proxy|idcard|idcopy)$/.test(s.id) ? ' prop' : '');
     docBusy = false; clearTimeout(docTimer); docDone = function () {};
     docs[s.id](s.opt).forEach(function (n) { ov.appendChild(n); });
     var sub = el('div', 'sub fs-s blink', s.id === 'drawer' ? '화면을 눌러 꺼내기' : '화면을 눌러 닫기'); ov.appendChild(sub);
@@ -1174,21 +1199,22 @@
     var sj = ASK.seojin.asked, mj = ASK.minjae.asked;
     function has(a, i) { return a.indexOf(i) >= 0; }
     return [
-      [F.PHONE === '센터', '휴대폰은 서랍에 있다. ‘경찰 인계 대기’.'],
+      [F.PHONE === '센터', '휴대폰은 서랍에 있다.\n‘경찰 인계 대기’.'],
       [F.PHONE === '언니', '휴대폰은 언니가 경찰서로 가져갔다.'],
       [F.PHONE === '민재', '휴대폰은 강민재가 가져갔다.'],
-      [true, '휴대폰의 주인은 윤서진의 동생이다. 화요일 밤부터 연락이 없다.'],
+      [true, '휴대폰의 주인은 윤서진의 동생이다.\n화요일 밤부터 연락이 없다.'],
       [has(sj, 0), '휴대폰 신호는 화요일 밤 이 역에서 멈췄다.'],
       [has(sj, 1), '동생은 휴대폰을 두고 다니지 않는다.'],
       [has(sj, 2), '동생은 누가 자꾸 집 앞에 서 있다고 했다.'],
       [!!F.PEEK, '화요일 23:47, 보내지 못한 메시지가 있었다.'],
       [true, '계단참에 젊은 남자가 서 있었다.'],
-      [has(mj, 0), '강민재는 잠금 번호를 알았다. 0412.'],
-      [!!F.ASK_WHERE, '강민재는 “7-4 쪽 벤치”라고 말했다. 대장에만 적힌 장소다.'],
+      [has(mj, 0), '강민재는 잠금 번호를 알았다.\n0412.'],
+      [!!F.ASK_WHERE, '강민재는 “7-4 쪽 벤치”라고 말했다.\n대장에만 적힌 장소다.'],
       [has(mj, 2), '강민재는 그녀가 아파서 못 온다고 했다.'],
-      [!!F.ASK_CALL, '강민재가 보여준 문자는 오늘 오후 2:10에 왔다. 휴대폰은 수요일부터 서랍에 있었다.'],
+      [!!F.ASK_CALL, '강민재가 보여준 문자는 오늘 오후 2:10에 왔다.\n휴대폰은 수요일부터 서랍에 있었다.'],
       [has(mj, 4), '강민재는 언니가 다녀간 것을 알았다.'],
       [!!F.TOLD, '나는 강민재에게 가족이 가져갔다고 말했다.'],
+      [F.PHONE === '민재', '강민재의 위임장은 센터 서류함에 남았다.'],
       [true, '강민재는 내 이름을 안다.']
     ].filter(function (r) { return r[0]; }).map(function (r) { return r[1]; });
   }
@@ -1214,7 +1240,7 @@
     var b = el('button', null, '처음 화면으로'); onPress(b, title); ov.appendChild(b);
   }
   var DEV = /[?&]dev\b/.test(location.search);
-  function backdrop() { B.name = 'bg'; B.last = 'bg'; B.flicker = true; B.dim = false; B.time = ''; B.close = false; drawBg(); }
+  function backdrop() { B.name = 'home'; B.last = 'bg'; B.flicker = false; B.dim = false; B.time = ''; B.close = false; drawBg(); }
   function title() {                                 // home
     freshState(); hideAll(); mode = 'title'; show($('menuBtn'), false); show($('menu'), false); backdrop();
     show(ov, true); ov.className = 'fs title';
