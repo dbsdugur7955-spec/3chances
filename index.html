@@ -159,7 +159,10 @@
   .scr.sheet .ink.ruled { line-height: calc(var(--u) * 8.35); color: #23304f; }
   .scr.sheet .ink.key { font-family: "Galmuri11", monospace; font-size: calc(var(--u) * 13); text-align: center; color: #1f3340; line-height: 1; }
   .scr.sheet .ink.ctr { text-align: center; }
-  .scr.sheet .ink.plateno { font-family: "Galmuri11", monospace; font-size: calc(var(--u) * 22); letter-spacing: calc(var(--u) * 1); text-align: center; color: #17181c; line-height: 1; }
+  .scr.sheet .overcv { position: absolute; left: 0; top: 0; }
+  .scr.sheet .ink.wh { color: #e6e6df; } .scr.sheet .ink.bl { color: #5b8cf0; } .scr.sheet .ink.rd { color: #ff5a4f; }
+  .scr.sheet .ink.tight { line-height: 1.3; }
+  .scr.sheet .ink.plateno { font-family: "Galmuri11", monospace; font-size: calc(var(--u) * 35); letter-spacing: 0; text-align: center; color: #17181c; line-height: 1; }
   .scr .t { position: absolute; left: 0; right: 0; text-align: center; color: #e6e6df; white-space: pre-line; }
   .scr .t.big { font-family: "Galmuri11", monospace; font-size: calc(var(--u) * 15); }
   .scr .t.dim { color: #aab3c2; }
@@ -266,7 +269,7 @@
 <script>
 (function () {
   'use strict';
-  var ASSETS = {"bg": ["bg_a", "bg_b", "bg_empty_a", "bg_empty_b", "bg_shut1", "bg_shut2", "bg_shutter", "e1_booth", "e1_desk", "e1_door", "e1_hall", "e1_hospital", "e1_laundry", "e1_lot", "e1_platform", "e1_room", "e1_station", "e1_store", "e1_studio", "home", "landing"], "dohyeon": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "jiwu": ["face_E0", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "face_P2_t1", "face_P2_t2", "face_P2_t3", "face_P2_t4", "face_P2", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_P1_1", "mouth_P1_2", "mouth_P2_1", "mouth_P2_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "malsun": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "minjae": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "face_C1", "face_C2", "face_C3", "face_C4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "face_P2_t1", "face_P2_t2", "face_P2_t3", "face_P2_t4", "face_P2", "eye_E0_half", "eye_E0_closed", "eye_B4_half", "eye_B4_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "mouth_C4_1", "mouth_C4_2", "mouth_P1_1", "mouth_P1_2", "mouth_P2_1", "mouth_P2_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "prop": ["call", "drawer_a", "drawer_b", "drawer_c", "e1_bag", "e1_box", "e1_butts", "e1_chain", "e1_keypad", "e1_lock", "e1_memo", "e1_mirror", "e1_plate", "e1_rack", "e1_register", "e1_shelf", "lock", "p_card", "p_idcard", "p_idcopy", "p_ledger", "p_memo", "p_notice", "p_proxy", "p_receipt", "phone_back", "phone_front", "photo", "sticker", "umbrella", "wallet"], "seojin": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "taeho": ["face_E0", "face_B1", "face_B2", "face_B3", "face_B4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "face_P2_t1", "face_P2_t2", "face_P2_t3", "face_P2_t4", "face_P2", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_B4_1", "mouth_B4_2", "mouth_P1_1", "mouth_P1_2", "mouth_P2_1", "mouth_P2_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"]};
+  var ASSETS = {"bg": ["bg_a", "bg_b", "bg_empty_a", "bg_empty_b", "bg_shut1", "bg_shut2", "bg_shutter", "e1_booth", "e1_desk", "e1_door", "e1_hall", "e1_hospital", "e1_laundry", "e1_lot", "e1_platform", "e1_room", "e1_station", "e1_store", "e1_studio", "home", "landing"], "dohyeon": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "jiwu": ["face_E0", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "face_P2_t1", "face_P2_t2", "face_P2_t3", "face_P2_t4", "face_P2", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_P1_1", "mouth_P1_2", "mouth_P2_1", "mouth_P2_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "malsun": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "minjae": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "face_C1", "face_C2", "face_C3", "face_C4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "face_P2_t1", "face_P2_t2", "face_P2_t3", "face_P2_t4", "face_P2", "eye_E0_half", "eye_E0_closed", "eye_B4_half", "eye_B4_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "mouth_C4_1", "mouth_C4_2", "mouth_P1_1", "mouth_P1_2", "mouth_P2_1", "mouth_P2_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "prop": ["call", "drawer_a", "drawer_b", "drawer_c", "e1_bag", "e1_bench", "e1_box", "e1_butts", "e1_carbag", "e1_card", "e1_cctv", "e1_chain", "e1_form", "e1_forms", "e1_hand", "e1_keypad", "e1_keypad_finger", "e1_lock", "e1_memo", "e1_mirror", "e1_navi", "e1_plate", "e1_rack", "e1_register", "e1_scarf", "e1_scarf_b", "e1_shelf", "lock", "p_card", "p_idcard", "p_idcopy", "p_ledger", "p_memo", "p_notice", "p_proxy", "p_receipt", "phone_back", "phone_front", "photo", "sticker", "umbrella", "wallet"], "seojin": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "taeho": ["face_E0", "face_B1", "face_B2", "face_B3", "face_B4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "face_P2_t1", "face_P2_t2", "face_P2_t3", "face_P2_t4", "face_P2", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_B4_1", "mouth_B4_2", "mouth_P1_1", "mouth_P1_2", "mouth_P2_1", "mouth_P2_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"]};
 
   // ------------------------------------------------------------------ layout + helpers
   var root = document.documentElement, stage = document.getElementById('stage');
@@ -699,13 +702,19 @@
     },
     e1obj: function (o) {                             // a received close-up with writing placed on it: o.pic, o.inks [[class, text, left, top, width, turn]], o.text
       var w = sheet(o.pic); (o.inks || []).forEach(function (k) { ink(w, k[0], k[1], k[2], k[3], k[4], k[5]); });
+      if (o.over) { var c2 = el('canvas', 'overcv'); c2.width = 144; c2.height = 192; var x2 = c2.getContext('2d'); x2.imageSmoothingEnabled = false; x2.drawImage(img.prop[o.over], 0, 0); w.appendChild(c2); }
       return o.text ? [w, el('div', 'proptext fs', o.text)] : [w];
     },
-    plate: function () { var w = sheet('e1_plate'); ink(w, 'plateno', '4412', 44, 90, 84); return [w]; },   // only the last four catch the light
+    plate: function () { var w = sheet('e1_plate'); ink(w, 'plateno', '4412', 45, 85, 92); return [w]; },   // only the last four catch the light
     tp: function (o) {                                // a sheet with writing: o.h heading, o.t body, o.k extra class
       var w = el('div', 'tp fs-s ' + (o.k || '')); if (o.h) w.appendChild(el('div', 'h', o.h)); w.appendChild(el('div', null, o.t)); return [w];
     },
-    ecard: function (o) { var c = CARD[o.id], w = el('div', 'ec fs-s'); w.appendChild(el('div', 'h', '증거 · ' + c[0])); w.appendChild(el('div', null, c[1])); return [w]; },
+    ecard: function (o) {                             // the fact card: heading in the first band, one fact to a band
+      var c = CARD[o.id], w = sheet('e1_card');
+      ink(w, 'fs-s bl', '증거', 10, 27, 60); ink(w, 'fs', c[0], 10, 36, 126);
+      c[1].split('\n').forEach(function (l, i) { ink(w, 'fs-s tight', l, 10, 65 + i * 34, 126); });
+      return [w];
+    },
     smsfail: function (o) {
       var p = el('div', 'phone fs-s'); p.appendChild(el('div', 'nm', '언니'));
       p.appendChild(el('div', 'fail', '전송 실패 · ' + (o && o.t || '화 23:47'))); p.appendChild(el('div', 'bub', '언니 나 그 사람이 또 따라')); return [p];
@@ -1189,7 +1198,7 @@
       { t: 'cap', lines: [['', '윤서진'], ['dim', '금요일 19:10']] }, CLK('금 19:10'), BG(),
       N('형사가 동생 집을\n같이 보자고 했다.\n먼저 와 버렸다.'),
       N('본가에도 전화해 봤다.\n엄마는 아무것도 모른다.'),
-      { t: 'doc', id: 'e1obj', opt: { pic: 'e1_keypad', inks: [['key', '1', 26.5, 43, 26], ['key', '2', 58, 43, 26], ['key', '3', 90, 43, 26], ['key', '4', 26.5, 76, 26], ['key', '5', 58, 76, 26], ['key', '6', 90, 76, 26], ['key', '7', 26.5, 109.5, 26], ['key', '8', 58, 109.5, 26], ['key', '9', 90, 107, 26], ['key', '*', 26.5, 143, 26], ['key', '0', 58, 143, 26]] } },
+      { t: 'doc', id: 'e1obj', opt: { pic: 'e1_keypad', over: 'e1_keypad_finger', inks: [['key', '1', 26.5, 43, 26], ['key', '2', 58, 43, 26], ['key', '3', 90, 43, 26], ['key', '4', 26.5, 76, 26], ['key', '5', 58, 76, 26], ['key', '6', 90, 76, 26], ['key', '7', 26.5, 109.5, 26], ['key', '8', 58, 109.5, 26], ['key', '9', 90, 109.5, 26], ['key', '*', 26.5, 143, 26], ['key', '0', 58, 143, 26], ['key', '#', 90, 143, 26]] } },
       N('걔 생일.', { spd: 130 }),
       { t: 'act', label: '0 · 4 · 1 · 2' },
       BG('e1_studio'), C('문이 열린다.'),
@@ -1230,14 +1239,19 @@
   }
 
   // ---------------------------------------------------------------- 4. 백도현, 금 20:00, the desk: what is known, what to ask for
+  function form(head, rows) {                        // a reply on the received form: heading box, then rows of three cells
+    var inks = [['fs-s tight', head, 11, 20, 122, -1.2]];
+    rows.forEach(function (r, i) { r.forEach(function (t, j) { if (t) inks.push(['fs-s', t, [8, 53, 97][j], 54 + i * 17.4, 44, -1.2]); }); });
+    return { t: 'doc', id: 'e1obj', opt: { pic: 'e1_form', inks: inks } };
+  }
   function reply(i) {
     var d = [
-      [{ h: '발신 내역표', t: '윤서연 명의\n\n화 23:45  발신 (언니, 부재)\n이후 발신 0건' }, 'E2'],
-      [{ h: '입출차 기록 · 서평역 공영주차장', t: '강민재 명의 차량\n\n화 22:55  입차\n수 00:06  출차' }, 'E3'],
-      [{ h: 'CCTV 정지 화면 · 개찰구', t: '개찰구를 나가는 여자,\n한 걸음 뒤 모자 쓴 남자.\n여자의 목에만 빨간색.\n\n열차 도착 23:38\n윤서연 하차 태그 23:58' }, 'E4'],
-      [{ h: '출입기록', t: '윤서연\n\n화 23:05  퇴근' }, null],
-      [{ h: '기지국 위치 조회', t: '강민재\n\n영장 필요\n오늘 밤 회신 불가' }, null]][i];
-    return [{ t: 'doc', id: 'tp', opt: d[0] }].concat(d[1] ? give(d[1]) : []);
+      [form('발신 내역표\n윤서연 명의', [['일시', '상대', '구분'], ['화 23:45', '언니', '발신·부재'], ['이후', '', '발신 0건']]), 'E2'],
+      [form('입출차 기록 · 서평역 공영주차장\n강민재 명의 차량', [['일시', '구분', ''], ['화 22:55', '입차', ''], ['수 00:06', '출차', '']]), 'E3'],
+      [{ t: 'doc', id: 'e1obj', opt: { pic: 'e1_cctv', inks: [['fs-s wh', '개찰구 · 화 23:58', 6, 5, 100]], text: '열차 도착 23:38\n윤서연 하차 태그 23:58' } }, 'E4'],
+      [form('출입기록\n윤서연', [['일시', '구분', ''], ['화 23:05', '퇴근', '']]), null],
+      [form('기지국 위치 조회\n강민재', [['영장 필요', '', ''], ['오늘 밤', '회신 불가', '']]), null]][i];
+    return [d[0]].concat(d[1] ? give(d[1]) : []);
   }
   function reqLocked(i) { return (i === 0 && police()) || (i === 1 && F.CAR); }
   function reqStep(s) {
@@ -1270,7 +1284,7 @@
       N('실종 나흘째.\n화요일 밤 이후\n그녀를 본 사람이 없다.'),
       N('기록이 오면\n강민재를 부른다.\n참고인은 언제든 일어나 나갈 수 있다.'),
       N('붙잡으려면\n그의 말을 깰\n기록이 있어야 한다.'),
-      C('조회 요청서 다섯 장이\n펼쳐진다.'),
+      { t: 'doc', id: 'prop', opt: { name: 'e1_forms', text: '조회 요청서 다섯 장.' } },
       N('오늘 안에 회신이 오는 건\n두 건뿐이다.'),
       N('두 건을 넘으면 처리가 밀려\n전부 늦게 회신이 온다.'),
       N('빨리 그녀를 찾으려면\n두 건 안으로 요청해야 해.'),
@@ -1281,7 +1295,7 @@
       { t: 'doc', id: 'calllog' }, N('휴대폰이 손에 있다.\n누구에게 걸고 보냈는지는\n열어 보면 된다.'));
       s = s.concat(give('E1'), give('E2')); }
     if (F.CAR) { var plate = has(F.L2, 1);
-      s.push({ t: 'doc', id: 'tp', opt: { k: 'memo hand', t: '검은 차' + (plate ? ' · 4412' : '') + '\n공영주차장' + (F.E7 ? '\n\n조수석 문 · 금색 체인 끈\n= 윤서연 가방' : '') } },
+      s.push({ t: 'doc', id: 'e1obj', opt: { pic: 'p_memo', inks: [['fs', '검은 차' + (plate ? ' · 4412' : '') + '\n공영주차장' + (F.E7 ? '\n\n조수석 문\n금색 체인 끈\n= 윤서연 가방' : ''), 22, 56, 100, -2]] } },
         N(plate ? '지우 씨가 번호를 봤다.\n주차장 기록은\n번호만 넣으면 바로 나온다.' : '지우 씨가 그 차를 봤다.\n주차장 기록은\n시각만 넣어도 바로 나온다.'));
       s = s.concat(give('E3'));
       if (F.E7) s.push(N('금색 체인.\n언니가 말한 가방이다.')); }
@@ -1298,7 +1312,7 @@
     return [
       { t: 'save', id: 'e1s5' }, { t: 'pov', who: '윤서연' },
       { t: 'cap', lines: [['', '윤서연'], ['dim', '화요일 23:38']] }, CLK('화 23:38'), BG(),
-      C('열차 문이 열린다.\n내 손과 휴대폰.\n목도리 끝이 빨갛다.'),
+      { t: 'doc', id: 'prop', opt: { name: 'e1_hand', text: '열차 문이 열린다.' } },
       N('헤어진 지 두 달.\n그 사람은 아직도\n집 앞에 서 있다.'),
       N('"오빠"라고 부르던 사람이\n이제 세상에서\n제일 무섭다.'),
       N('잠금장치도 하나 더 달았고,\n접근금지 신청서도 거의 다 썼다.\n이번 주만 버티자.'),
@@ -1322,7 +1336,7 @@
       { t: 'choose', opts: [{ label: '돌아본다', go: function () { return []; } }] },
       CLK('화 23:47'), BG(),
       { t: 'say', who: null, cut: true, text: '휴대폰이 바닥을 미끄러져\n벤치 아래로 들어간다.', shake: 600 },
-      { t: 'doc', id: 'smsfail', opt: { t: '23:47' } },
+      { t: 'doc', id: 'e1obj', opt: { pic: 'e1_bench', inks: [['fs-s rd', '전송 실패', 62, 96, 60, -33], ['fs-s wh', '23:47', 70, 104, 60, -33]] } },
       C('화면이 꺼진다.'),
       { t: 'run', fn: e1s6 }];
   }
@@ -1404,9 +1418,9 @@
     var e = F.reached ? (F.TIME <= 2 ? 'A' : 'B') : 'C', r = [R(function () { F.ending = e; show($('stm'), false); })];
     r.push(BG());
     if (e !== 'C') r.push(CLK(''), BG('e1_laundry'), C('세탁소 셔터가 올라간다.\n손전등 불빛.\n창고 문.'), BG());
-    if (e === 'A') r.push(C('바닥에 놓인 빨간 목도리.\n그 옆에서\n손 하나가 움직인다.'), { t: 'cap', lines: [['', '윤서연,\n탈수 상태로 구조.']] },
+    if (e === 'A') r.push({ t: 'doc', id: 'prop', opt: { name: 'e1_scarf', text: '손 하나가 움직인다.' } }, { t: 'cap', lines: [['', '윤서연,\n탈수 상태로 구조.']] },
       BG('e1_hospital'), C('병원 복도.\n이동장 안에서\n고양이가 운다.'), BG(), C('월요일 아침.\n유실물 센터 창구.\n서진이 들어와 고개를 깊이 숙인다.'));
-    if (e === 'B') r.push(C('바닥에 놓인 빨간 목도리.\n그 옆은 화면 밖이다.'), C('구급차가 사이렌을\n켜지 않고 떠난다.'), { t: 'cap', lines: [['', '강민재, 구속.']] },
+    if (e === 'B') r.push({ t: 'doc', id: 'prop', opt: { name: 'e1_scarf_b' } }, C('구급차가 사이렌을\n켜지 않고 떠난다.'), { t: 'cap', lines: [['', '강민재, 구속.']] },
       C('경찰서 복도.\n서진이 증거물 목록에 서명한다.\n맨 위 줄: 휴대폰 1대'));
     if (e === 'C') r.push(CLK(''), { t: 'cap', lines: [['', '증거 불충분.\n귀가 조치.']] }, BG('e1_station'), C('그가 코트 단추를 채우고\n걸어 나간다.'),
       { t: 'pov', who: ME }, { t: 'bg', name: 'bg', time: '17:50', clock: '월 17:50' }, C('월요일 저녁.\n유리 너머 먼 계단참에\n누군가 서 있다.'),
@@ -1421,7 +1435,7 @@
     var avail = [0, 1, 2, 3, 4].filter(function (i) { return !reqLocked(i) && !has(F.req, i); });
     var opts = [['붙잡는다', 'give', function () {
       var r = [C('일어선다.'), T(DH, '강민재 씨,\n윤서연 씨 실종 건으로\n긴급체포합니다.'), { t: 'exit' }, BG()];
-      if (F.BREAK >= 2) { F.reached = 1; r.push(C('차량 수색.\n조수석 문을 연다.\n금색 체인 가방이 바닥으로 미끄러진다.'), C('내비게이션.\n자주 간 곳: 서평동 ○○세탁소\n수 · 목 · 금 밤')); }
+      if (F.BREAK >= 2) { F.reached = 1; r.push({ t: 'doc', id: 'prop', opt: { name: 'e1_carbag', text: '차량 수색.\n조수석 문을 연다.' } }, { t: 'doc', id: 'e1obj', opt: { pic: 'e1_navi', inks: [['fs-s wh tight', '자주 간 곳\n\n서평동\n○○세탁소\n\n수·목·금\n밤', 96, 66, 40]] } }); }
       else r.push(C('검사가 영장을\n청구하지 않는다.'));
       return r.concat(ending()); }],
     ['돌려보내고 뒤를 밟는다', '', function () {
@@ -1645,7 +1659,7 @@
     if (P.mouth) { P.mouth = 0; draw(); }
   }
   function doc(s) {
-    show(ov, true); ov.className = 'fs doc' + (/^(prop|calling|lock|drawer|stick|memo|notice|ledger|receipt|card|proxy|idcard|idcopy|plate|e1obj)$/.test(s.id) ? ' prop' : '');
+    show(ov, true); ov.className = 'fs doc' + (/^(prop|calling|lock|drawer|stick|memo|notice|ledger|receipt|card|proxy|idcard|idcopy|plate|e1obj|ecard)$/.test(s.id) ? ' prop' : '');
     docBusy = false; clearTimeout(docTimer); docDone = function () {};
     docs[s.id](s.opt).forEach(function (n) { ov.appendChild(n); });
     var sub = el('div', 'sub fs-s blink', s.id === 'drawer' ? '화면을 눌러 꺼내기' : '화면을 눌러 닫기'); ov.appendChild(sub);
@@ -1812,6 +1826,7 @@
   });
 
   onPress($('menuBtn'), openMenu);
+  if (DEV) window.__doc = function (id, opt) { hideAll(); mode = 'doc'; doc({ id: id, opt: opt }); };   // test hook: show one document
   function loaded() { if (--pendingLoads > 0) return; breathe(); autoBlink(); flickerLoop(); title(); }
   if (document.fonts && document.fonts.load) { document.fonts.load('12px Galmuri11'); document.fonts.load('12px Galmuri9'); }
 })();
