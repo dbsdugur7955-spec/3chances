@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>3번의 기회</title>
-<meta name="description" content="모든 진실을 알 수 없습니다. 당신만의 이야기를 만드세요. 선택의 책임은 당신께 있습니다.">
+<meta name="description" content="모든 진실을 알 수 없습니다. 당신의 손으로 이야기를 만드세요. 선택의 책임은 오롯이 당신에게 있습니다.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="3번의 기회">
 <meta property="og:title" content="3번의 기회 — 프롤로그 「분실물 센터」">
-<meta property="og:description" content="모든 진실을 알 수 없습니다. 당신만의 이야기를 만드세요. 선택의 책임은 당신께 있습니다.">
+<meta property="og:description" content="모든 진실을 알 수 없습니다. 당신의 손으로 이야기를 만드세요. 선택의 책임은 오롯이 당신에게 있습니다.">
 <meta property="og:image" content="https://dbsdugur7955-spec.github.io/3chances/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -161,6 +161,7 @@
   .scr.sheet .psigcv { position: absolute; left: calc(var(--u) * 74); top: calc(var(--u) * 130); width: calc(var(--u) * 47.2); height: calc(var(--u) * 18.4); }
   .scr.sheet .ink.psig { font-family: "Galmuri11", monospace; font-size: calc(var(--u) * 9); letter-spacing: calc(var(--u) * 1); color: #1c2a66; }
   .scr.sheet .ink.cpy { color: #3a3a3c; }
+  .scr.sheet .ink.ruled.r2 { line-height: calc(var(--u) * 8.02); } .scr.sheet .ink.filetag { color: #23304f; }
   .scr.sheet .ink.ruled { line-height: calc(var(--u) * 8.35); color: #23304f; }
   .scr.sheet .kbtn { position: absolute; width: calc(var(--u) * 28); height: calc(var(--u) * 27); border-radius: calc(var(--u) * 4); z-index: 3; cursor: pointer; } .scr.sheet .kbtn.on { background: rgba(255, 255, 255, .45); }
   .scr.sheet .ink.key { font-family: "Galmuri11", monospace; font-size: calc(var(--u) * 13); text-align: center; color: #1f3340; line-height: 1; }
@@ -1272,7 +1273,7 @@
       { t: 'pick5', id: 'l3', word: '살펴볼 수 있는 건', unit: '곳', items: [
         { label: '현관 앞 택배 상자', steps: look(1, { t: 'doc', id: 'e1obj', opt: { pic: 'e1_box', inks: [['fs', '윤서연 님', 34, 42, 80, 8.5], ['fs-s', '화요일 도착', 32, 56, 80, 8.5]], text: '수요일에 내가 들여놓고\n열어 보지 않았다.' } }, '화요일 밤,\n걔는 집에 오지 않았다.', 'e1_door') },
         { label: '현관 안쪽', steps: look(2, { t: 'doc', id: 'prop', opt: { name: 'e1_lock', text: '새로 단 보조 잠금장치.\n나사 구멍 주변에\n석고 가루가 남아 있다.' } }, '언제 이걸 달았지.', 'e1_door') },
-        { label: '책상 위 메모', steps: look(3, { t: 'doc', id: 'e1obj', opt: { pic: 'e1_memo', inks: [['fs ruled', '접근금지 신청\n— 필요한 것:\n\n· 문자 캡처\n· 날짜별 정리\n· 집 앞 사진', 12, 25, 96, -3.3]], text: '옆에 “집 앞 사진”이라고 적힌\n클리어 파일. 텅 비어 있다.' } }, '접근금지..?\n…사진은 다 어디 갔지.') },
+        { label: '책상 위 메모', steps: look(3, { t: 'doc', id: 'e1obj', opt: { pic: 'e1_memo', inks: [['fs-s ruled r2', '접근금지 신청\n— 필요한 것:\n· 문자 캡처\n· 날짜별 정리\n· 집 앞 사진', 16, 51.5, 54, 0], ['fs-s ctr filetag', '집 앞 사진', 86, 58, 47, 0]] } }, '접근금지..?\n…사진은 다 어디 갔지.') },
         { label: '옷걸이', steps: look(4, { t: 'doc', id: 'prop', opt: { name: 'e1_rack', text: '빨간 목도리가 없다.\n옆에 늘 걸던\n금색 체인 가방도.' } }, '그 목도리, 내가 사 준 거.\n제일 아끼는 가방도 없네.') },
         { label: '책장', steps: look(5, { t: 'doc', id: 'prop', opt: { name: 'e1_shelf', text: '여행 책 몇 권,\n제주도 엽서 한 장.' } }, '…별다른 건 없다.') }
       ] },
@@ -1781,12 +1782,6 @@
     var st = ASK[set];
     if (st.left <= 0) { queue = afterAsk(set).concat(queue); return next(); }
     setHud(); show(pick, true); pick.className = ''; pick.textContent = '';
-    var early = $('early'); early.textContent = ''; show(early, true);
-    [['give', '내준다'], ['refuse', '거절한다']].forEach(function (o) {
-      var eb = el('button', o[0], o[1]);
-      onPress(eb, function () { queue = outcome(set, o[0]).concat(queue); next(); });
-      early.appendChild(eb);
-    });
     var top = el('div', 'top fs-s');
     var cnt = el('span'); cnt.appendChild(document.createTextNode('물을 수 있는 건 ')); cnt.appendChild(el('b', null, st.left + '번')); top.appendChild(cnt);
     top.appendChild(ledgerBtn({ t: 'ask', set: set })); pick.appendChild(top);
@@ -1864,7 +1859,7 @@
     freshState(); hideAll(); mode = 'title'; show($('menuBtn'), false); show($('menu'), false); backdrop();
     show(ov, true); ov.className = 'fs title';
     ov.appendChild(el('h1', null, '3번의 기회'));
-    ov.appendChild(el('div', 'ep fs-s', '모든 진실을 알 수 없습니다.\n당신만의 이야기를 만드세요.\n선택의 책임은 당신께 있습니다.'));
+    ov.appendChild(el('div', 'ep fs-s', '모든 진실을 알 수 없습니다.\n당신의 손으로 이야기를 만드세요.\n선택의 책임은 오롯이 당신에게 있습니다.'));
     var acts = el('div', 'acts'), sv = load(SAVE), meta = load(META) || {};
     if (sv && SCENE[sv.id] && sv.id !== 'sOpen') {
       var c = el('button', 'main', '이어하기'); c.appendChild(el('small', null, SCENE[sv.id][0] + ' · ' + SCENE[sv.id][1]));
@@ -1889,7 +1884,7 @@
     var meta = load(META) || {}, sv = load(SAVE), done = meta.prologue && meta.prologue.done;
     var r = el('div', 'erow'); r.appendChild(el('div', 'no fs-s', '프롤로그')); r.appendChild(el('div', 'nm', '분실물 센터'));
     var phone = done ? { '센터': '휴대폰은 서랍에 남았다', '언니': '휴대폰은 언니가 가져갔다', '민재': '휴대폰은 강민재가 가져갔다' }[meta.prologue.PHONE] : '';
-    r.appendChild(el('div', 'st fs-s' + (done ? ' done' : ''), done ? '완료 · ' + phone : sv && sv.id !== 'sOpen' && sv.id.charAt(0) !== 'e' ? '진행 중 · ' + SCENE[sv.id][0] : '약 10분'));
+    r.appendChild(el('div', 'st fs-s' + (done ? ' done' : ''), done ? '완료 · ' + phone : sv && sv.id !== 'sOpen' && sv.id.charAt(0) !== 'e' ? '진행 중 · ' + SCENE[sv.id][0] : ''));
     var b = el('button', null, done ? '다시 하기' : '시작하기'); onPress(b, function () { store(SAVE, null); start(sOpen); }); r.appendChild(b);
     if (DEV) {                                        // scene jump: test only
       var j = el('div', 'jrow');
@@ -1901,7 +1896,7 @@
     ov.appendChild(r);
     var in1 = sv && sv.id.charAt(0) === 'e', d1 = meta.ep1 && meta.ep1.done;
     var r2 = el('div', 'erow' + (done || DEV ? '' : ' lock')); r2.appendChild(el('div', 'no fs-s', '1화')); r2.appendChild(el('div', 'nm', '23:47'));
-    r2.appendChild(el('div', 'st fs-s' + (d1 ? ' done' : ''), !(done || DEV) ? '프롤로그를 마치면 열립니다' : d1 ? '완료 · ' + meta.ep1.ending : in1 ? '진행 중 · ' + SCENE[sv.id][0].slice(5) : '약 30분 · 프롤로그의 선택이 이어집니다'));
+    r2.appendChild(el('div', 'st fs-s' + (d1 ? ' done' : ''), !(done || DEV) ? '프롤로그를 마치면 열립니다' : d1 ? '완료 · ' + meta.ep1.ending : in1 ? '진행 중 · ' + SCENE[sv.id][0].slice(5) : '프롤로그의 선택이 이어집니다'));
     if (done || DEV) {
       var b1 = el('button', null, d1 ? '다시 하기' : '시작하기'); onPress(b1, function () { store(SAVE, null); startEp1(e1s1); }); r2.appendChild(b1);
       if (DEV) {
