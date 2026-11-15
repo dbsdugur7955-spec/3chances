@@ -79,6 +79,7 @@
   button.pressed { transition: none; transform: translateY(calc(var(--u) * 2)); box-shadow: none; background: #d2d2cb; color: #0a0a0c; border-color: #d2d2cb; }
   button:disabled { transition: none; transform: translateY(calc(var(--u) * 2)); box-shadow: none; background: #08080a; }
   #pick .opt { display: block; width: 100%; text-align: left; height: calc(var(--u) * 13); margin-top: calc(var(--u) * 1); font-size: calc(var(--u) * 6.2); }
+  #pick .opt.sub1 { width: calc(100% - var(--u) * 8); margin-left: calc(var(--u) * 8); } #pick .opt.sub2 { width: calc(100% - var(--u) * 16); margin-left: calc(var(--u) * 16); }
   #pick .opt:disabled { color: #4b4d4f; border-color: #2a2a2d; text-decoration: line-through; }
   #pick .ledger { height: calc(var(--u) * 11); font-size: calc(var(--u) * 5.6); border-color: #b9b29a; color: #d8d2bc; }
   #pick .ledger.pressed { background: #d8d2bc; border-color: #d8d2bc; color: #0a0a0c; }
@@ -88,6 +89,8 @@
 
   #ov { position: absolute; inset: 0; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
   #ov .cap { white-space: pre-line; } #ov .cap .dim { color: #a9aba6; } #ov .cap .red { color: #c42c28; }
+  #ov .capbg { position: absolute; left: 0; top: calc(var(--u) * 32); width: calc(var(--u) * 144); height: calc(var(--u) * 192); image-rendering: pixelated; opacity: 0; transition: opacity 1.2s steps(6); }
+  #ov .capbg.full { top: 0; height: calc(var(--u) * 256); } #ov .capbg.on { opacity: .25; } #ov .cap { position: relative; z-index: 1; } #ov .sub { z-index: 1; }
   #ov .cap p { margin: calc(var(--u) * 4) 0; opacity: 0; }
   #ov .cap p.on { animation: tubeOn .5s steps(1) forwards, flick 5.3s steps(1) .5s infinite; }
   #ov .cap p.dim.on { animation: tubeOn .5s steps(1) forwards, flick 7.1s steps(1) 1.3s infinite; }
@@ -272,7 +275,7 @@
 <script>
 (function () {
   'use strict';
-  var ASSETS = {"bg": ["bg_a", "bg_b", "bg_empty_a", "bg_empty_b", "bg_shut1", "bg_shut2", "bg_shut3", "bg_shutter", "e1_booth", "e1_desk", "e1_door", "e1_hall", "e1_hospital", "e1_laundry", "e1_lot", "e1_platform", "e1_pstairs", "e1_room", "e1_stairs", "e1_station", "e1_store", "e1_studio", "home", "landing"], "dohyeon": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "jiwu": ["face_E0", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "face_P2_t1", "face_P2_t2", "face_P2_t3", "face_P2_t4", "face_P2", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_P1_1", "mouth_P1_2", "mouth_P2_1", "mouth_P2_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "malsun": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "minjae": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "face_C1", "face_C2", "face_C3", "face_C4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "face_P2_t1", "face_P2_t2", "face_P2_t3", "face_P2_t4", "face_P2", "eye_E0_half", "eye_E0_closed", "eye_B4_half", "eye_B4_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "mouth_C4_1", "mouth_C4_2", "mouth_P1_1", "mouth_P1_2", "mouth_P2_1", "mouth_P2_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "prop": ["call", "drawer_a", "drawer_b", "drawer_c", "e1_bag", "e1_bench", "e1_box", "e1_butts", "e1_carbag", "e1_card", "e1_cctv", "e1_chain", "e1_form", "e1_forms", "e1_hand", "e1_keypad", "e1_lock", "e1_memo", "e1_mirror", "e1_navi", "e1_plate", "e1_rack", "e1_register", "e1_scarf", "e1_scarf_b", "e1_shelf", "e1_smile", "lock", "p_card", "p_idcard", "p_idcopy", "p_ledger", "p_memo", "p_notice", "p_proxy", "p_receipt", "phone_back", "phone_front", "photo", "sticker", "umbrella", "wallet"], "seojin": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "taeho": ["face_E0", "face_B1", "face_B2", "face_B3", "face_B4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "face_P2_t1", "face_P2_t2", "face_P2_t3", "face_P2_t4", "face_P2", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_B4_1", "mouth_B4_2", "mouth_P1_1", "mouth_P1_2", "mouth_P2_1", "mouth_P2_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"]};
+  var ASSETS = {"bg": ["bg_a", "bg_b", "bg_empty_a", "bg_empty_b", "bg_shut1", "bg_shut2", "bg_shut3", "bg_shutter", "e1_booth", "e1_desk", "e1_door", "e1_hall", "e1_hospital", "e1_laundry", "e1_lot", "e1_platform", "e1_pstairs", "e1_room", "e1_stairs", "e1_station", "e1_store", "e1_studio", "home", "landing"], "dohyeon": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "jiwu": ["face_E0", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "face_P2_t1", "face_P2_t2", "face_P2_t3", "face_P2_t4", "face_P2", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_P1_1", "mouth_P1_2", "mouth_P2_1", "mouth_P2_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "malsun": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "minjae": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "face_C1", "face_C2", "face_C3", "face_C4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "face_P2_t1", "face_P2_t2", "face_P2_t3", "face_P2_t4", "face_P2", "eye_E0_half", "eye_E0_closed", "eye_B4_half", "eye_B4_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "mouth_C4_1", "mouth_C4_2", "mouth_P1_1", "mouth_P1_2", "mouth_P2_1", "mouth_P2_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "prop": ["call", "drawer_a", "drawer_b", "drawer_c", "e1_bag", "e1_bag_phone", "e1_bag_proxy", "e1_bench", "e1_bowl", "e1_box", "e1_butts", "e1_carbag", "e1_card", "e1_cctv", "e1_chain", "e1_form", "e1_forms", "e1_hand", "e1_keypad", "e1_lock", "e1_memo", "e1_mirror", "e1_navi", "e1_plate", "e1_rack", "e1_register", "e1_scarf", "e1_scarf_b", "e1_shelf", "e1_smile", "lock", "p_card", "p_idcard", "p_idcopy", "p_ledger", "p_memo", "p_notice", "p_proxy", "p_receipt", "phone_back", "phone_front", "photo", "sticker", "umbrella", "wallet"], "seojin": ["face_E0", "face_A1", "face_A2", "face_A3", "face_A4", "face_B1", "face_B2", "face_B3", "face_B4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_A4_1", "mouth_A4_2", "mouth_B4_1", "mouth_B4_2", "mouth_P1_1", "mouth_P1_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"], "taeho": ["face_E0", "face_B1", "face_B2", "face_B3", "face_B4", "face_P1_t1", "face_P1_t2", "face_P1_t3", "face_P1_t4", "face_P1", "face_P2_t1", "face_P2_t2", "face_P2_t3", "face_P2_t4", "face_P2", "eye_E0_half", "eye_E0_closed", "mouth_E0_1", "mouth_E0_2", "mouth_B4_1", "mouth_B4_2", "mouth_P1_1", "mouth_P1_2", "mouth_P2_1", "mouth_P2_2", "breath_1", "breath_2", "breath_3", "breath_4", "breath_5"]};
 
   // ------------------------------------------------------------------ layout + helpers
   var root = document.documentElement, stage = document.getElementById('stage');
@@ -454,7 +457,7 @@
   // ------------------------------------------------------------------ documents (anything with writing on it is made here)
   var LEDGER = [
     { no: 3, when: '수 08:10', where: '2호차 선반', what: '접이식 우산 · 검정', priv: '—' },
-    { no: 5, when: '목 18:40', where: '개찰구 앞', what: '반지갑 · 갈색 · 브렌트', priv: '신분증 1(김○○), 카드 2,\n현금 없음, 아이 사진 1' },
+    { no: 5, when: '목 18:40', where: '개찰구 앞', what: '반지갑 · 갈색 · 브렌트', priv: '신분증 1(김정민), 카드 2,\n현금 없음, 아이 사진 1' },
     { no: 6, when: '수 00:35', where: '승강장 7-4 끝 벤치 아래\n(막차 후 청소 중)', what: '휴대폰 · 검정 · 오르비', priv: '투명 케이스, 뒷면 고양이 스티커,\n액정 왼쪽 아래 깨짐, 잠금 상태' }
   ];
   // handwriting: a Hangul name is drawn as pen strokes. Each person holds the pen differently.
@@ -662,7 +665,7 @@
       var st = PEN[o.name] || PEN._, path = signPath(o.name, st), si = 0, pi = 0;
       function dot(px, py) { x.fillRect(Math.round(px), Math.round(py), 1, 1); x.fillRect(Math.round(px) + 1, Math.round(py), 1, 1); }
       docBusy = true;
-      (function pen() {
+      function pen() {
         if (si >= path.length) return docDone();
         var seg = path[si], wait = 16;
         for (var k = 0; k < st.speed && pi < seg.pts.length; k++, pi++) dot(seg.pts[pi][0], seg.pts[pi][1]);
@@ -670,8 +673,9 @@
           wait = seg.last ? st.lift * 3 : st.lift; si++; pi = 0;
           try { if (navigator.vibrate) navigator.vibrate(2); } catch (e) {}
         }
-        docTimer = setTimeout(pen, si === 0 && pi <= st.speed ? 600 : wait);
-      })();
+        docTimer = setTimeout(pen, wait);
+      }
+      docTimer = setTimeout(pen, 600);                // the sheet is blank for a moment, then the pen comes down
       docFinish = function () {
         clearTimeout(docTimer);
         for (; si < path.length; si++, pi = 0) for (; pi < path[si].pts.length; pi++) dot(path[si].pts[pi][0], path[si].pts[pi][1]);
@@ -709,7 +713,12 @@
       return [w];
     },
     e1obj: function (o) {                             // a received close-up with writing placed on it: o.pic, o.inks [[class, text, left, top, width, turn]], o.text
-      var w = sheet(o.pic); (o.inks || []).forEach(function (k) { ink(w, k[0], k[1], k[2], k[3], k[4], k[5]); });
+      var w = sheet(o.pic), last = null; (o.inks || []).forEach(function (k) { last = ink(w, k[0], k[1], k[2], k[3], k[4], k[5]); });
+      if (o.type && last) {                           // the label is written while we watch
+        var full = last.textContent, n = 0; last.textContent = ''; docBusy = true;
+        (function put() { if (n >= full.length) return docDone(); n++; last.textContent = full.slice(0, n); docTimer = setTimeout(put, full.charAt(n - 1) === ' ' ? 60 : 130); })();
+        docFinish = function () { clearTimeout(docTimer); last.textContent = full; docDone(); };
+      }
       if (o.over) { var c2 = el('canvas', 'overcv'); c2.width = 144; c2.height = 192; var x2 = c2.getContext('2d'); x2.imageSmoothingEnabled = false; x2.drawImage(img.prop[o.over], 0, 0); w.appendChild(c2); }
       return o.text ? [w, el('div', 'proptext fs', o.text)] : [w];
     },
@@ -785,74 +794,74 @@
 
   var QSETS = {
     taeho: [
-      { label: '신분증 이름이 뭐죠?', short: '신분증 이름', cut: 'P2', flag: 'TH_NAME', steps: [
+      { par: -1, label: '언제 어디서 잃어버렸죠?', short: '언제 어디서', steps: [
+        { t: 'say', who: ME, text: '언제 어디서\n잃어버리셨어요?' },
+        { t: 'say', who: TH, text: '이 역에서요. 어제쯤.' } ] },
+      { par: 0, label: '다른 특징이 있나요?', short: '다른 특징', steps: [
+        { t: 'say', who: ME, text: '지갑에 다른 특징이\n있나요?' },
+        { t: 'say', who: TH, text: '갈색이고, 브렌트고.' },
+        { t: 'say', who: TH, text: '그게 특징이죠.' } ] },
+      { par: -1, label: '안에 뭐가 들어 있었죠?', short: '내용물', cut: 'P2', steps: [
+        { t: 'say', who: ME, text: '안에 뭐가\n들어 있었죠?' },
+        { t: 'say', who: TH, text: '카드하고 현금 좀\n있을 겁니다.', face: 'P2' },
+        { t: 'fx', face: 'E0' } ] },
+      { par: 2, label: '신분증 이름이 뭐죠?', short: '신분증 이름', cut: 'P2', flag: 'TH_NAME', steps: [
         { t: 'say', who: ME, text: '지갑 안 신분증에 적힌\n성함이 어떻게 되죠?' },
         { t: 'say', who: TH, text: '정태호요.' },
         { t: 'say', who: ME, text: '신분증은 다른 분\n성함인데요.' },
         { t: 'say', who: TH, text: '…^아.', face: 'P2', spd: 150 },
         { t: 'say', who: TH, text: '형 겁니다.\n형이 부탁해서 온 거예요.', face: 'E0', ms: 150 } ] },
-      { label: '안에 뭐가 들어 있었죠?', short: '내용물', cut: 'P2', steps: [
-        { t: 'say', who: ME, text: '안에 뭐가\n들어 있었죠?' },
-        { t: 'say', who: TH, text: '카드하고 현금 좀\n있을 겁니다.', face: 'P2' },
-        { t: 'fx', face: 'E0' } ] },
-      { label: '언제 어디서 잃어버렸죠?', short: '언제 어디서', steps: [
-        { t: 'say', who: ME, text: '언제 어디서\n잃어버리셨어요?' },
-        { t: 'say', who: TH, text: '이 역에서요. 어제쯤.' } ] },
-      { label: '다른 특징이 있나요?', short: '다른 특징', steps: [
-        { t: 'say', who: ME, text: '지갑에 다른 특징이\n있나요?' },
-        { t: 'say', who: TH, text: '갈색이고, 브렌트고.' },
-        { t: 'say', who: TH, text: '그게 특징이죠.' } ] },
-      { label: '위임장은 가져오셨어요?', short: '위임장', cut: 'B4', steps: [
+      { par: 3, label: '위임장은 가져오셨어요?', short: '위임장', cut: 'B4', steps: [
         { t: 'say', who: ME, text: '대리 수령이시면\n위임장 가져오셨어요?' },
         { t: 'say', who: TH, text: '가족인데 그런 게\n필요합니까?', face: 'B4', ms: 120 },
         { t: 'fx', face: 'E0', ms: 150 } ] }
     ],
     seojin: [
-      { label: '경찰에서는 뭐라고 하던가요?', short: '경찰', steps: [
+      { par: -1, label: '경찰에서는 뭐라고 하던가요?', short: '경찰', steps: [
         { t: 'say', who: ME, text: '경찰에서는 뭐라고\n하던가요?' },
         { t: 'say', who: SJ, text: '휴대폰 신호가 화요일 밤\n이 역에서 멈췄대요.\n꺼진 게 아니라 그냥 안 움직인대요.' },
         { t: 'say', who: SJ, text: '그 말 듣고\n포털을 뒤졌어요.' } ] },
-      { label: '휴대폰을 두고 다니는 편인가요?', short: '두고 다니나', steps: [
+      { par: 0, label: '휴대폰을 두고 다니는 편인가요?', short: '두고 다니나', steps: [
         { t: 'say', who: ME, text: '동생분이 휴대폰을\n두고 다니는 편인가요?' },
         { t: 'say', who: SJ, text: '아니요.\n걔는 화장실 갈 때도\n들고 가요.' } ] },
-      { label: '마지막으로 뭐라고 하셨어요?', short: '마지막 말', cut: 'P1', steps: [
+      { par: 0, label: '담당 형사와 연락이 되세요?', short: '담당 형사', steps: [
+        { t: 'say', who: ME, text: '담당 형사분과는\n연락이 되세요?' },
+        { t: 'say', who: SJ, text: '백도현 경위님이요.\n낮에 전화했는데\n현장에 나가셨대요.' },
+        { t: 'say', who: SJ, text: '문자는 남겼어요.' } ] },
+      { par: -1, label: '마지막으로 뭐라고 하셨어요?', short: '마지막 말', cut: 'P1', steps: [
         { t: 'say', who: ME, text: '동생분이 마지막으로\n뭐라고 하셨어요?' },
         { t: 'say', who: SJ, text: '이사 가고 싶다고요.\n누가 자꾸 집 앞에\n서 있다고.' },
         { t: 'say', who: SJ, text: '저는…^^ 네가 예민한\n거라고 했어요.', face: 'P1', spd: 70 },
         { t: 'fx', face: 'E0' } ] },
-      { label: '담당 형사와 연락이 되세요?', short: '담당 형사', steps: [
-        { t: 'say', who: ME, text: '담당 형사분과는\n연락이 되세요?' },
-        { t: 'say', who: SJ, text: '백도현 경위님이요.\n낮에 전화했는데\n현장에 나가셨대요.' },
-        { t: 'say', who: SJ, text: '문자는 남겼어요.' } ] },
-      { label: '잠금화면 알림을 본다', short: '잠금화면', cut: 'lock', flag: 'PEEK', steps: [
+      { par: 3, label: '잠금화면 알림을 본다', short: '잠금화면', cut: 'lock', flag: 'PEEK', steps: [
         { t: 'doc', id: 'lock' } ] }
     ],
     minjae: [
-      { label: '잠금을 풀 수 있으세요?', short: '잠금', steps: [
-        { t: 'say', who: ME, text: '잠금을 풀 수 있으세요?' },
-        { t: 'say', who: MJ, text: '네. 0412.' },
-        { t: 'say', who: MJ, text: '풀어드릴까요?' } ] },
-      { label: '어디서 잃어버리셨대요?', short: '잃어버린 곳', flag: 'ASK_WHERE', steps: [
-        { t: 'say', who: ME, text: '어디서 잃어버리셨다고\n하던가요?' },
-        { t: 'say', who: MJ, text: '승강장에서요.' },
-        { t: 'say', who: MJ, text: '7-4 쪽 벤치\n근처라던데요.' },
-        { t: 'doc', id: 'ledger', opt: { hit: 6 } } ] },
-      { label: '본인은 왜 못 오시죠?', short: '못 오는 이유', cut: 'B4', steps: [
-        { t: 'say', who: ME, text: '본인은 왜 못 오시죠?' },
-        { t: 'say', who: MJ, text: '아파서요. 요 며칠.' },
-        { t: 'say', who: MJ, text: '제가 다 챙깁니다.', face: 'B4' },
-        { t: 'fx', face: 'E0' } ] },
-      { label: '본인과 통화할 수 있나요?', short: '통화', cut: 'B4', flag: 'ASK_CALL', steps: [
-        { t: 'say', who: ME, text: '본인과 통화할 수\n있을까요?' },
-        { t: 'say', who: MJ, text: '휴대폰이 여기 있는데요.', face: 'B4' },
-        { t: 'say', who: MJ, text: '대신 이거.', face: 'E0' },
-        { t: 'doc', id: 'msg' } ] },
-      { label: '두 분은 어떤 관계시죠?', short: '관계', cut: 'B4', steps: [
+      { par: -1, label: '두 분은 어떤 관계시죠?', short: '관계', cut: 'B4', steps: [
         { t: 'say', who: ME, text: '두 분은 어떤\n관계시죠?' },
         { t: 'say', who: MJ, text: '남자친구요.' },
         { t: 'say', who: MJ, text: '언니가^ 다녀갔죠?', face: 'B4', ms: 420, spd: 95 },
         { t: 'say', who: MJ, text: '닮았어요,^ 둘이.', spd: 95 },
-        { t: 'fx', face: 'E0', ms: 420 } ] }
+        { t: 'fx', face: 'E0', ms: 420 } ] },
+      { par: 0, label: '잠금을 풀 수 있으세요?', short: '잠금', steps: [
+        { t: 'say', who: ME, text: '잠금을 풀 수 있으세요?' },
+        { t: 'say', who: MJ, text: '네. 0412.' },
+        { t: 'say', who: MJ, text: '풀어드릴까요?' } ] },
+      { par: -1, label: '본인은 왜 못 오시죠?', short: '못 오는 이유', cut: 'B4', steps: [
+        { t: 'say', who: ME, text: '본인은 왜 못 오시죠?' },
+        { t: 'say', who: MJ, text: '아파서요. 요 며칠.' },
+        { t: 'say', who: MJ, text: '제가 다 챙깁니다.', face: 'B4' },
+        { t: 'fx', face: 'E0' } ] },
+      { par: 2, label: '본인과 통화할 수 있나요?', short: '통화', cut: 'B4', flag: 'ASK_CALL', steps: [
+        { t: 'say', who: ME, text: '본인과 통화할 수\n있을까요?' },
+        { t: 'say', who: MJ, text: '휴대폰이 여기 있는데요.', face: 'B4' },
+        { t: 'say', who: MJ, text: '대신 이거.', face: 'E0' },
+        { t: 'doc', id: 'msg' } ] },
+      { par: 2, label: '어디서 잃어버리셨대요?', short: '잃어버린 곳', flag: 'ASK_WHERE', steps: [
+        { t: 'say', who: ME, text: '어디서 잃어버리셨다고\n하던가요?' },
+        { t: 'say', who: MJ, text: '승강장에서요.' },
+        { t: 'say', who: MJ, text: '7-4 쪽 벤치\n근처라던데요.' },
+        { t: 'doc', id: 'ledger', opt: { hit: 6 } } ] }
     ]
   };
 
@@ -861,14 +870,15 @@
       { t: 'save', id: 'sOpen' },
       { t: 'cap', lines: [['', '서평역 유실물 센터'], ['dim', '금요일 17:20'], ['red', '마감까지 40분']] },
       { t: 'bg', name: 'bg', time: '17:20', clock: '금 17:20' },
-      { t: 'say', who: null, text: '통로의 형광등 하나가\n아까부터 깜빡인다.\n이 일을 시작한 지 2주째다.' },
+      { t: 'say', who: null, text: '통로의 형광등 하나가\n아까부터 깜빡인다.\n여기 온 지 2주,\n눈이 나빠지는 것 같다.' },
       { t: 'doc', id: 'memo' },
       { t: 'say', who: null, text: '오늘은 혼자다.\n6시까지만 버티면 된다.' },
       { t: 'doc', id: 'notice' },
-      { t: 'say', who: null, text: '규정은 간단하다.\n귀중품은 본인에게만.' },
+      { t: 'say', who: null, text: '규정은 간단하다.\n귀중품은 꼭 본인에게 인도.' },
       { t: 'doc', id: 'ledger' },
       { t: 'say', who: null, text: '서랍에는 세 가지가 있다.\n우산, 지갑, 휴대폰.' },
-      { t: 'say', who: null, text: '창구 벨이 울린다.' },
+      { t: 'say', who: null, cut: true, text: '(땡땡)' },
+      { t: 'say', who: null, text: '…첫 손님이다.' },
       { t: 'run', fn: sMalsun }
     ];
   }
@@ -882,15 +892,15 @@
       { t: 'doc', id: 'drawer', opt: { pick: 3, text: '3번 칸.' } },
       { t: 'run', fn: function () { F.UMB = 1; return []; } },
       { t: 'doc', id: 'prop', opt: { name: 'umbrella', text: '손잡이에 테이프를 감은\n낡은 우산.' } },
-      { t: 'say', who: null, text: '3번. 검정 접이식 우산.\n확인할 것은 없다.' },
+      { t: 'say', who: null, text: '3번 칸, 테이프 감긴 우산.\n이건 물어볼 것도 없다.' },
       { t: 'act', label: '수령 대장을 내민다' },
       { t: 'doc', id: 'receipt', opt: { item: 'No.3  접이식 우산 · 검정', name: '오말순', when: '금 17:24' } },
       { t: 'say', who: MS, text: '고마워요.' },
-      { t: 'say', who: MS, text: '저기 계단참에\n젊은 남자가 서있더라.', face: 'P1' },
-      { t: 'say', who: MS, text: '아무래도 아가씨\n좋아하는 거 같은데?', face: 'A4', ms: 200 },
+      { t: 'say', who: MS, text: '근데 저기 계단참에\n젊은 남자가 하나\n서 있더라고.', face: 'P1' },
+      { t: 'say', who: MS, text: '아까부터 이쪽만 보던데.\n아가씨 보러 온 거 아냐?', face: 'A4', ms: 200 },
       { t: 'exit' },
       { t: 'bg', name: 'landing', clock: '금 17:25' },
-      { t: 'say', who: null, text: '휴대폰을 보며 서 있는 사람.\n퇴근 시간이다.\n누굴 기다리는 사람은 많다.' },
+      { t: 'say', who: null, text: '휴대폰을 들여다보는 남자.\n퇴근 시간이니까,\n누굴 기다리는 거겠지.' },
       { t: 'say', who: null, text: '…아까부터^ 있었던가.', spd: 70 },
       { t: 'run', fn: sTaeho }
     ];
@@ -908,14 +918,13 @@
       { t: 'doc', id: 'drawer', opt: { pick: 5, text: '5번 칸.' } },
       { t: 'fx', face: 'E0' },
       { t: 'doc', id: 'prop', opt: { name: 'wallet', text: '서랍 안의 지갑.\n카드 두 장, 현금은 없다.' } },
-      { t: 'say', who: null, text: '지갑은 귀중품이다.\n본인인지 확인해야 한다.' },
-      { t: 'say', who: null, text: '질문은 세 번이면 된다.\n박 주임이 그렇게 가르쳤다.' },
+      { t: 'say', who: null, text: '지갑이다.\n본인인지 확인해야 한다.\n박 주임은 세 번만 물으면 된다고 했다.' },
       { t: 'ask', set: 'taeho' }
     ];
   }
   function afterAsk(set) {
     if (set === 'taeho') return [
-      { t: 'say', who: null, text: '들은 것과 대장을\n맞춰 본다.' },
+      { t: 'say', who: null, text: '대장에 적힌 거랑\n맞는 말이 몇 개였지.' },
       { t: 'say', who: TH, text: '바쁜데 빨리 좀\n주시죠.' },
       { t: 'decide', set: 'taeho' } ];
     if (set === 'seojin') return [
@@ -935,10 +944,10 @@
         { t: 'doc', id: 'receipt', opt: { item: 'No.5  반지갑 · 갈색 · 브렌트', name: '정태호', when: '금 17:33' } },
         { t: 'say', who: null, text: '그는 지갑을 낚아채듯\n받아 간다.' },
         { t: 'exit' },
-        { t: 'say', who: null, text: '…맞게 한 걸까.', spd: 80 },
+        { t: 'say', who: null, text: '…줘 버렸다.', spd: 80 },
         { t: 'bg', name: 'bg', time: '17:33', clock: '금 17:33' },
-        { t: 'say', who: null, text: '전화벨이 울린다.' },
-        { t: 'say', who: '전화', text: '김○○인데요.' },
+        { t: 'say', who: null, cut: true, text: '(따르릉)' },
+        { t: 'say', who: '전화', text: '김정민인데요.' },
         { t: 'say', who: '전화', text: '포털에 제 지갑이\n서평역에 있다고\n올라와 있던데요.' },
         { t: 'say', who: '전화', text: '방금 서평역 편의점에서\n제 카드로 결제됐다고\n문자가 왔어요.' },
         { t: 'say', who: null, text: '…그 사람은^\n주인이 아니었다.', spd: 70 },
@@ -949,14 +958,14 @@
         { t: 'say', who: TH, text: '시간만 날렸네. 쳇.' },
         { t: 'exit' },
         { t: 'say', who: null, text: '포털.' , spd: 120 },
-        { t: 'say', who: null, text: '포털에는 색상과 상표만\n올라간다.' }, { t: 'run', fn: sSeojin } ];
+        { t: 'say', who: null, text: '포털엔 색이랑 상표밖에 없다.\n그것만 아는 사람은\n역시 수상하다.' }, { t: 'run', fn: sSeojin } ];
     }
     if (set === 'seojin') {
       F.sjChoice = c;
       if (c === 'give') {
         F.PHONE = '언니';
         return [
-          { t: 'say', who: null, text: '규정 위반이다.\n그래도 이게 맞는 것 같다.' },
+          { t: 'say', who: null, text: '규정 위반이다.\n그래도 이 사람한테는\n줘야 할 것 같다.' },
           { t: 'doc', id: 'receipt', opt: { item: 'No.6  휴대폰 · 검정 · 오르비', name: '윤서진', note: '가족', when: '금 17:44' } },
           { t: 'say', who: SJ, text: '감사합니다.\n경찰서로 바로 갈게요.', face: 'E0', ms: 160 },
           { t: 'exit' }, { t: 'run', fn: sMinjae } ];
@@ -983,7 +992,7 @@
       { t: 'act', label: '위임장을 서류함에 넣는다' },
       { t: 'doc', id: 'proxy' },
       { t: 'say', who: null, text: '대리 수령 근거로\n서류함에 넣었다.\n규정대로 했다.' },
-      { t: 'say', who: null, text: '그런데 왜^\n개운하지 않을까.', spd: 60 }, { t: 'run', fn: sClose } ];
+      { t: 'say', who: null, text: '손바닥이 축축하다.', spd: 60 }, { t: 'run', fn: sClose } ];
     return [
       { t: 'say', who: ME, text: c === 'hold' ? '본인 확인이 될 때까지\n보관하겠습니다.' : '본인 확인이 되면\n내드리겠습니다.' },
       { t: 'say', who: MJ, text: '규정이 그렇다면요.', face: 'A4', ms: 300 },
@@ -991,7 +1000,7 @@
       { t: 'say', who: MJ, text: '수고하세요.' },
       { t: 'exit' },
       { t: 'say', who: null, text: '…명찰.', spd: 110 },
-      { t: 'say', who: null, text: '명찰을 본 것뿐이다.^\n그런데 왜 소름이 돋지.' }, { t: 'run', fn: sClose } ];
+      { t: 'say', who: null, text: '명찰을 읽었을 뿐이다.^\n그런데 왜 소름이 돋지.' }, { t: 'run', fn: sClose } ];
   }
   function sSeojin() {
     return [
@@ -1003,16 +1012,16 @@
       { t: 'say', who: SJ, text: '제 동생 걸 수도\n있어서요.' },
       { t: 'doc', id: 'prop', opt: { name: 'photo', text: '그녀가 유리에 댄 사진.' } },
       { t: 'say', who: SJ, text: '화요일 밤부터 연락이 안 돼요.\n실종 신고는 했는데,\n성인이니까 기다려보래요.' },
-      { t: 'say', who: null, text: '그녀가 전화를 건다.', face: 'P1' },
+      { t: 'fx', face: 'P1' },
       { t: 'ring' },
       { t: 'say', who: null, text: '서랍 안에서\n진동이 울린다.' },
       { t: 'act', label: '서랍을 연다' },
       { t: 'doc', id: 'drawer', opt: { pick: 6, buzz: true, text: '6번 칸.' } },
       { t: 'doc', id: 'calling' },
       { t: 'say', who: null, text: '맞다.', spd: 130 },
-      { t: 'say', who: null, text: '이 휴대폰의 주인은\n지금 여기 없다.' },
+      { t: 'say', who: null, text: '주인은\n지금 여기 없다.' },
       { t: 'say', who: SJ, text: '…이걸 들고 가야\n경찰이 움직여요.', face: 'E0', ms: 120 },
-      { t: 'say', who: SJ, text: '주세요.', face: 'B4', ms: 160 },
+      { t: 'say', who: SJ, text: '그러니까 주세요.', face: 'B4', ms: 160 },
       { t: 'say', who: ME, text: '가족이셔도 본인이 아니면\n위임장이 있어야 합니다.' },
       { t: 'say', who: SJ, text: '본인이 없어졌는데\n위임장을 어떻게 받아요.' },
       { t: 'fx', face: 'E0', ms: 160 },
@@ -1025,7 +1034,7 @@
       { t: 'save', id: 'sMinjae' },
       { t: 'cap', cp: sMinjae, lines: [['dim', '금요일 17:50'], ['red', '마감까지 10분']] },
       { t: 'bg', name: 'bg_empty', time: '17:50', clock: '금 17:50' },
-      { t: 'say', who: null, text: '계단참이 비어 있다.\n마감까지 10분.\n더 올 사람은 없을 줄 알았다.' },
+      { t: 'say', who: null, text: '계단참의 남자가 안 보인다.\n마감까지 10분.' },
       { t: 'enter', ch: 'minjae' },
       { t: 'say', who: MJ, text: '마감 전에 죄송합니다.' },
       { t: 'say', who: MJ, text: '포털에 올라온 휴대폰을\n찾으러 왔어요.' },
@@ -1057,11 +1066,11 @@
       { t: 'say', who: MJ, text: '검정색 오르비,\n투명 케이스,\n뒤에 고양이 스티커.' },
       { t: 'act', label: '서랍을 연다' },
       { t: 'doc', id: 'drawer', opt: { pick: 6, text: '6번 칸.' } },
-      { t: 'doc', id: 'prop', opt: { name: 'phone_back', sticker: !!F.STICKER, text: F.STICKER ? '맞다.\n내가 붙인 스티커가\n그대로 있다.' : '맞다.' } },
+      { t: 'doc', id: 'prop', opt: { name: 'phone_back', sticker: !!F.STICKER } },
       { t: 'say', who: MJ, text: '액정 왼쪽 아래에\n금이 갔고요.' },
-      { t: 'doc', id: 'prop', opt: { name: 'phone_front', text: '이것도 맞다.' } },
-      { t: 'say', who: null, text: '전부 맞다.' },
-      { t: 'say', who: null, text: '그런데 왜^ 선뜻\n내주고 싶지 않을까.', spd: 60 },
+      { t: 'doc', id: 'prop', opt: { name: 'phone_front' } },
+      { t: 'say', who: null, text: (F.STICKER ? '내가 붙인 스티커,\n' : '') + '금 간 액정까지.\n…전부 맞다.' },
+      { t: 'say', who: null, text: '그런데^\n손이 서랍에서 안 떨어진다.', spd: 60 },
       { t: 'ask', set: 'minjae' });
     return s;
   }
@@ -1076,7 +1085,6 @@
       { t: 'say', who: null, text: '6시다.\n셔터를 내릴 시간이다.' },
       { t: 'act', label: '셔터 스위치를 누른다' },
       { t: 'shutter' },
-      { t: 'say', who: null, text: '셔터가 천천히\n내려온다.' },
       { t: 'say', who: '목소리', text: '잠깐만요!', shake: 700, spd: 55 },
       { t: 'doc', id: 'card', opt: { slam: true } },
       { t: 'enter', ch: 'dohyeon' },
@@ -1131,13 +1139,17 @@
   }
 
   // ---- five to choose from, three chances
+  // question trees: a follow-up (par = index of the question it hangs under) appears once that question has been asked
+  function shown(list, st, idx) { var p = list[idx].par; return p == null || p < 0 || st.asked.indexOf(p) >= 0; }
+  function sub(list, idx) { var d = 0, p = list[idx].par; while (p != null && p >= 0) { d++; p = list[p].par; } return d ? ' sub' + d : ''; }
   function pick5(s) {
     var st = ASK[s.id]; curAsk = null;
     if (st.left <= 0) return next();
     setHud(); show(pick, true); pick.className = ''; pick.textContent = '';
     var top = el('div', 'top fs-s'), cnt = el('span'); cnt.appendChild(document.createTextNode(s.word + ' ')); cnt.appendChild(el('b', null, st.left + s.unit)); top.appendChild(cnt); pick.appendChild(top);
     s.items.forEach(function (q, idx) {
-      var b = el('button', 'opt', q.label); b.disabled = st.asked.indexOf(idx) >= 0;
+      if (!shown(s.items, st, idx)) return;
+      var b = el('button', 'opt' + sub(s.items, idx), q.label); b.disabled = st.asked.indexOf(idx) >= 0;
       onPress(b, function () { st.asked.push(idx); st.left--; queue = q.steps().concat([s], queue); next(); });
       pick.appendChild(b);
     });
@@ -1147,7 +1159,7 @@
   function e1s1() {
     var ph = F.PHONE, s = [
       { t: 'save', id: 'e1s1' }, { t: 'pov', who: DH },
-      { t: 'cap', lines: [['', '백도현'], ['dim', '금요일 18:00']] }, CLK('금 18:00'), BG('e1_booth'),
+      { t: 'cap', pic: 'dohyeon', lines: [['', '백도현'], ['dim', '금요일 18:00']] }, CLK('금 18:00'), BG('e1_booth'),
       N('수요일에 맡은 실종 건이다.\n성인이라 급한 일은 아니라고 봤다.'),
       N('방금 민원실에서 전화가 왔다.\n동생 집 앞에\n누가 자꾸 서 있었다고.'),
       N('마지막 신호는 이 역이다.\n오늘 기록을 못 보면\n월요일까지 기다려야 한다.'),
@@ -1161,33 +1173,35 @@
       T(DH, '오늘 일을 순서대로\n듣겠습니다.'),
       N('마감 시간이다.\n오래 붙잡을 수는 없다.'),
       { t: 'pick5', id: 'q1', word: '물을 수 있는 건', unit: '번', items: [
-        { label: '찾으러 온 사람이 몇 명이었습니까?', steps: function () { return [T(DH, '그 휴대폰을 찾으러 온 사람이\n몇 명이었습니까?'), T(ME, '두 명이요.'), T(ME, '언니분, 그리고\n남자친구라는 분.')]; } },
-        { label: '휴대폰은 지금 어디 있습니까?', steps: function () {
+        { par: -1, label: '누가 찾으러 왔었습니까?', steps: function () { return [T(DH, '그 휴대폰,\n누가 찾으러 왔었습니까?'), T(ME, '언니분, 그리고\n남자친구라는 남자요.')]; } },
+        { par: 0, label: '그 남자가 뭘 내밀었습니까?', steps: function () {
+          F.q2 = 1;
+          var r = [T(DH, '그 남자가 뭘\n내밀었습니까?'), T(ME, '위임장하고 신분증이요.\n강민재.'), T(ME, '서류는 빠진 게\n없었어요.')];
+          if (F.ASK_CALL) r.push(T(ME, '오늘 2시 10분에 받았다는\n문자도 보여줬어요.'), T(ME, '그 휴대폰은 수요일부터\n여기 있었는데요.'));
+          return r; } },
+        { par: 0, label: '그 남자가 한 말 중에 걸리는 게?', steps: function () {
+          var r = [T(DH, '그 남자가 한 말 중에\n걸리는 게 있었습니까?')];
+          if (F.ASK_WHERE) r = r.concat([T(ME, '어디서 잃어버렸냐고 물었더니\n7-4 쪽 벤치라고 했어요.', { face: 'P1' }), T(ME, '너무 구체적이에요…\n보통은 벤치라고만 하거든요.')], give('E5'));
+          else { r.push(T(ME, '…글쎄요.', { face: 'P1' })); if (ph !== '민재') r.push(T(ME, '…제 이름을 불렀어요.', { spd: 110 })); }
+          r.push(T(ME, '우산 찾으러 오신 할머니가\n계단참에 남자가 서 있다고 했어요.', { face: 'P1' }), T(ME, '…그 사람이었던 것 같아요.'), { t: 'fx', face: 'E0' }); return r; } },
+        { par: -1, label: '휴대폰은 지금 어디 있습니까?', steps: function () {
           var r = [T(DH, '휴대폰은 지금\n어디 있습니까?')];
           if (ph === '센터') r.push(T(ME, '서랍에 있습니다.'));
           if (ph === '언니') r.push(T(ME, '언니분께 드렸습니다.', { face: 'P2' }), T(ME, '규정 위반인 건 압니다.'), { t: 'fx', face: 'E0' },
             C('휴대폰을 꺼내\n서에 전화를 건다.'), T(DH, '…접니다. 윤서진 씨가 낸\n휴대폰, 들어와 있습니까?'), T(DH, '…네.'), T(DH, '확인했습니다.'));
           if (ph === '민재') r.push(T(ME, '…그분께 내드렸습니다.', { face: 'P2' }), T(ME, '서류가 다 맞아서요.'), { t: 'fx', face: 'E0' });
           return r; } },
-        { label: '남자가 뭘 내밀었습니까?', steps: function () {
-          F.q2 = 1;
-          var r = [T(DH, '남자가 뭘 내밀었습니까?'), T(ME, '위임장하고 신분증이요.\n강민재.'), T(ME, '서류는 빠진 게\n없었어요.')];
-          if (F.ASK_CALL) r.push(T(ME, '오늘 2시 10분에 받았다는\n문자도 보여줬어요.'), T(ME, '그 휴대폰은 수요일부터\n여기 있었는데요.'));
-          return r; } },
-        { label: '남자가 한 말 중에 걸리는 게?', steps: function () {
-          var r = [T(DH, '남자가 한 말 중에\n걸리는 게 있었습니까?')];
-          if (F.ASK_WHERE) r = r.concat([T(ME, '어디서 잃어버렸냐고 물었더니\n7-4 쪽 벤치라고 했어요.', { face: 'P1' }), T(ME, '너무 구체적이에요…\n보통은 벤치라고만 하거든요.')], give('E5'));
-          else { r.push(T(ME, '…글쎄요.', { face: 'P1' })); if (ph !== '민재') r.push(T(ME, '…제 이름을 불렀어요.', { spd: 110 })); }
-          r.push({ t: 'fx', face: 'E0' }); return r; } },
-        { label: '그 밖에 본 게 있습니까?', steps: function () {
-          var r = [T(DH, '그 밖에 본 게\n있습니까?'), T(ME, '우산 찾으러 오신 할머니가\n계단참에 남자가 서 있다고 했어요.', { face: 'P1' }), T(ME, '…그 사람이었던 것 같아요.')];
-          if (F.PEEK) r.push(T(ME, '휴대폰에 전송 안 된 메시지\n알림이 있었어요.\n화요일 23시 47분.'));
-          r.push({ t: 'fx', face: 'E0' }); return r; } }
+        { par: 3, label: '휴대폰에서 본 게 있습니까?', steps: function () {
+          var r = [T(DH, '휴대폰에서 본 게\n있습니까?')];
+          if (F.PEEK) r.push(T(ME, '전송 안 된 메시지\n알림이 있었어요.\n화요일 23시 47분.', { face: 'P1' }), { t: 'fx', face: 'E0' });
+          else r.push(T(ME, '아뇨.\n잠겨 있어서\n본 건 없어요.'));
+          return r; } }
       ] }];
     if (ph === '센터') s.push(C('직원이 서랍을 연다.\n6번 칸.'), { t: 'doc', id: 'prop', opt: { name: 'phone_back', sticker: true, text: '\'경찰 인계 대기\'\n스티커가 붙은 휴대폰.' } },
-      { t: 'doc', id: 'e1obj', opt: { pic: 'e1_bag', inks: [['fs-s ctr', '증거물 · 휴대폰 1대', 22, 104, 100, 0]], text: '증거 봉투를 벌린다.\n휴대폰이 들어간다.' } }, N('증거 하나는\n손에 들어왔다.'));
+      { t: 'doc', id: 'prop', opt: { name: 'e1_bag' } },
+      { t: 'doc', id: 'e1obj', opt: { pic: 'e1_bag_phone', type: true, inks: [['fs-s ctr', '증거물 · 휴대폰 1대', 22, 104, 100, 0]] } }, N('증거 하나는\n손에 들어왔다.'));
     if (ph === '언니') s.push(C('휴대폰에 문자.\n"민원실: 증거물 접수 완료"'), N('증거 하나는 서에 있다.'));
-    if (ph === '민재') { s.push(C('직원이 서랍을 연다.\n6번 칸이 비어 있다.'), C('수령 대장의\n반듯한 서명.'), C('직원이 서류함에서\n위임장을 꺼내 내민다.'), { t: 'doc', id: 'proxy' }, { t: 'doc', id: 'e1obj', opt: { pic: 'e1_bag', inks: [['fs-s ctr', '증거물 · 위임장 1부', 22, 104, 100, 0]], text: '증거 봉투에 넣는다.' } });
+    if (ph === '민재') { s.push(C('직원이 서랍을 연다.\n6번 칸이 비어 있다.'), C('수령 대장의\n반듯한 서명.'), C('직원이 서류함에서\n위임장을 꺼내 내민다.'), { t: 'doc', id: 'proxy' }, { t: 'doc', id: 'prop', opt: { name: 'e1_bag' } }, { t: 'doc', id: 'e1obj', opt: { pic: 'e1_bag_proxy', type: true, inks: [['fs-s ctr', '증거물 · 위임장 1부', 22, 104, 100, 0]] } });
       s = s.concat(give('E6')); s.push(N('서류는 완벽했다.')); }
     s.push(R(function () { return F.q2 ? [] : [T(DH, '그 남자, 이름은\n기억나십니까?'), T(ME, '강민재요.\n위임장이랑 신분증에서 봤어요.')]; }),
       T(DH, '오늘 말씀하신 건\n제가 다 받아 적었습니다.'), T(DH, '퇴근길에 누가 따라오면\n바로 전화 주세요.'),
@@ -1202,11 +1216,11 @@
     function look(n, shot, line, x) { return function () { F.L2.push(n); return [typeof shot === 'string' ? C(shot) : shot, N(line, x)]; }; }
     return [
       { t: 'save', id: 'e1s2' }, { t: 'pov', who: ME },
-      { t: 'cap', lines: [['', '한지우'], ['dim', '금요일 18:40']] }, CLK('금 18:40'), { t: 'bg', name: 'bg_shut3', time: '18:40' },
+      { t: 'cap', pic: 'jiwu', lines: [['', '한지우'], ['dim', '금요일 18:40']] }, CLK('금 18:40'), { t: 'bg', name: 'bg_shut3', time: '18:40' },
       N('형사가 가고 나서\n대장을 몇 번이나 다시 맞춰 봤다.'),
       N('박 주임님께 문자를 쓰다 지웠다.\n뭐라고 써야 할지 모르겠다.'),
       R(function () { return F.PHONE === '민재' ? [C('6번 칸이\n비어 있다.'), N('규정대로 했다.\n…그런데.')] : []; }),
-      C('서랍을 잠근다.\n가방을 멘다.\n불을 끈다.'),
+      C('서랍을 잠근다.\n가방을 멘다.'), N('후…\n퇴근하자.'), C('불을 끈다.'),
       BG('e1_lot'),
       N('형사는 명함을 두고 갔다.\n누가 따라오면\n전화하라고 했다.'),
       N(F.PHONE !== '민재' ? '그 남자는\n내 이름을 안다.' : '그 남자는\n휴대폰을 가져갔다.'),
@@ -1217,7 +1231,7 @@
         { label: '번호판', steps: look(1, { t: 'doc', id: 'plate' }, '…4412.') },
         { label: '조수석 문 아래', steps: look(2, { t: 'doc', id: 'prop', opt: { name: 'e1_chain', text: '금색 체인 끈이\n삐져나와 반짝인다.' } }, '헉…\n저러면 가방 망가질 텐데.') },
         { label: '운전석 창문 아래', steps: look(3, { t: 'doc', id: 'prop', opt: { name: 'e1_butts', text: '바닥에 담배꽁초가\n눈에 띄게 많다.' } }, '…꽁초가 왜 저렇게 많아.') },
-        { label: '계산대', steps: look(4, { t: 'doc', id: 'prop', opt: { name: 'e1_register', text: '직원이 휴대폰을\n보고 있다.' } }, '…나만 신경 쓰이나.') },
+        { label: '계산대', steps: function () { F.L2.push(4); return [{ t: 'doc', id: 'prop', opt: { name: 'e1_register', text: '직원이 휴대폰을 보다가\n고개를 든다.' } }, T('직원', '저 검은 차 아저씨요?\n아까부터 담배만\n세 갑째 사 가던데.'), N('…세 갑.')]; } },
         { label: '진열대 끝 볼록거울', steps: look(5, { t: 'doc', id: 'prop', opt: { name: 'e1_mirror', text: '내 모습이 비친다.' } }, '얼굴 하얗네.') }
       ] },
       C('운전석 남자의 고개가\n천천히 편의점 쪽으로 돈다.'),
@@ -1243,20 +1257,22 @@
     function look(n, shot, line, bg) { return function () { F.L3.push(n); return bg ? [BG(bg), shot, N(line), BG('e1_studio')] : [shot, N(line)]; }; }
     return [
       { t: 'save', id: 'e1s3' }, { t: 'pov', who: SJ },
-      { t: 'cap', lines: [['', '윤서진'], ['dim', '금요일 19:10']] }, CLK('금 19:10'), BG(),
-      N('민원실 직원이\n형사한테 전화를 걸어 줬다.\n처음으로 누가 내 말을 들어 줬다.'),
+      { t: 'cap', pic: 'seojin', lines: [['', '윤서진'], ['dim', '금요일 19:10']] }, CLK('금 19:10'), BG(),
+      N('민원실 직원이 그 자리에서\n형사한테 전화를 걸어 줬다.'), N('사흘 만에 처음으로,\n누가 내 말을 들어 줬다.'),
       R(function () { return F.PHONE === '언니' ? [N('휴대폰은 민원실에 맡겼다.\n증거물이라고 했다.')] : []; }),
-      N('형사가 동생 집을\n같이 보자고 했다.\n기다릴 수가 없어서 먼저 왔다.'),
+      N('형사가 동생 집을\n같이 보자고 했는데,'), N('가만히 기다릴 수가 없어서\n먼저 와 버렸다.'),
       BG('e1_stairs'),
-      N('본가에도 전화해 봤다.\n엄마는 아무것도 모른다.'),
+      N('본가에도 전화해 봤는데\n엄마는 아무것도 몰랐다.\n괜히 걱정만 시켰다.'),
       BG(),
       { t: 'doc', id: 'keypad' },
       BG('e1_studio'), C('문이 열린다.'),
-      N('수요일 아침에 왔을 땐\n그냥 빈집인 줄 알았다.\n고양이 밥만 주고 갔다.'),
+      N('수요일 아침에 왔을 땐\n그냥 어디 놀러 간 줄 알았다.\n고양이 밥만 주고 그냥 갔다.'),
+      { t: 'doc', id: 'prop', opt: { name: 'e1_bowl' } },
+      N('수요일에 준 게 아니다.\n이건…\n누가 채워 놨다.'),
       { t: 'pick5', id: 'l3', word: '살펴볼 수 있는 건', unit: '곳', items: [
         { label: '현관 앞 택배 상자', steps: look(1, { t: 'doc', id: 'e1obj', opt: { pic: 'e1_box', inks: [['fs', '윤서연 님', 34, 42, 80, 8.5], ['fs-s', '화요일 도착', 32, 56, 80, 8.5]], text: '수요일에 내가 들여놓고\n열어 보지 않았다.' } }, '화요일 밤,\n걔는 집에 오지 않았다.', 'e1_door') },
         { label: '현관 안쪽', steps: look(2, { t: 'doc', id: 'prop', opt: { name: 'e1_lock', text: '새로 단 보조 잠금장치.\n나사 구멍 주변에\n석고 가루가 남아 있다.' } }, '언제 이걸 달았지.', 'e1_door') },
-        { label: '책상 위 메모', steps: look(3, { t: 'doc', id: 'e1obj', opt: { pic: 'e1_memo', inks: [['fs ruled', '접근금지 신청\n— 필요한 것:\n\n· 문자 캡처\n· 날짜별 정리\n· 집 앞 사진', 12, 25, 96, -3.3]] } }, '접근금지..?') },
+        { label: '책상 위 메모', steps: look(3, { t: 'doc', id: 'e1obj', opt: { pic: 'e1_memo', inks: [['fs ruled', '접근금지 신청\n— 필요한 것:\n\n· 문자 캡처\n· 날짜별 정리\n· 집 앞 사진', 12, 25, 96, -3.3]], text: '옆에 “집 앞 사진”이라고 적힌\n클리어 파일. 텅 비어 있다.' } }, '접근금지..?\n…사진은 다 어디 갔지.') },
         { label: '옷걸이', steps: look(4, { t: 'doc', id: 'prop', opt: { name: 'e1_rack', text: '빨간 목도리가 없다.\n옆에 늘 걸던\n금색 체인 가방도.' } }, '그 목도리, 내가 사 준 거.\n제일 아끼는 가방도 없네.') },
         { label: '책장', steps: look(5, { t: 'doc', id: 'prop', opt: { name: 'e1_shelf', text: '여행 책 몇 권,\n제주도 엽서 한 장.' } }, '…별다른 건 없다.') }
       ] },
@@ -1268,7 +1284,7 @@
         { label: '동생 전 남자친구예요.\n헤어진 뒤론 몰라요', go: function () { F.TIME++; F.hid++; return []; } }
       ] },
       T(DH, '동생분이 마지막으로\n연락한 게 언제입니까?'),
-      N('화요일 밤.\n전화가 왔었다.\n나는 자고 있었다.'),
+      N('화요일 밤에\n걔한테 전화가 왔었다.'), N('나는 자고 있었고,\n아침에 다시 걸지도 않았다.'),
       { t: 'choose', opts: [
         { label: '화요일 밤에 전화가 왔는데…\n제가 못 받았어요', go: function () { return []; } },
         { label: '기억이 안 나요', go: function () { F.TIME++; F.hid++; return []; } }
@@ -1285,6 +1301,7 @@
       C('초인종.\n현관 앞, 형사의 목소리.'),
       T(DH, '동생분 휴대폰\n잠금 번호를 아십니까?'), T(SJ, '걔는 비밀번호를\n다 생일로 해요.\n0412.'),
       R(function () { return has(F.L3, 4) && !F.bagQ ? [T(SJ, '걔 가방도 없어요.\n금색 체인 달린 거요.')] : []; }),
+      T(SJ, '형사님,\n누가 들어왔었어요.\n고양이 밥이 채워져 있었어요.'),
       T(DH, '동생분 방,\n제가 좀 보겠습니다.'),
       N('형사가 동생 방에 들어온다.\n이제야 진짜 일이 된 것 같다.'),
       { t: 'run', fn: e1s4 }];
@@ -1332,15 +1349,14 @@
   function e1s4() {
     var s = [
       { t: 'save', id: 'e1s4' }, { t: 'pov', who: DH },
-      { t: 'cap', lines: [['', '백도현'], ['dim', '금요일 20:00']] }, CLK('금 19:58'), BG('e1_pstairs'),
+      { t: 'cap', pic: 'dohyeon', lines: [['', '백도현'], ['dim', '금요일 20:00']] }, CLK('금 19:58'), BG('e1_pstairs'),
       N('원룸에서\n서로 돌아왔다.'),
       CLK('금 20:00'), BG('e1_desk'),
       N('실종 나흘째.\n화요일 밤 이후\n그녀를 본 사람이 없다.'),
       N('기록이 오면\n강민재를 부른다.\n참고인은 언제든 일어나 나갈 수 있다.'),
       N('붙잡으려면\n그의 말을 깰\n기록이 있어야 한다.'),
       { t: 'doc', id: 'prop', opt: { name: 'e1_forms', text: '조회 요청서 다섯 장.' } },
-      N('오늘 안에 회신이 오는 건\n두 건뿐이다.'),
-      N('두 건을 넘으면 처리가 밀려\n전부 늦게 회신이 온다.'),
+      N('오늘 밤 안에 오는 회신은\n두 건뿐이다.\n더 넣으면 전부 늦어진다.'),
       N('빨리 그녀를 찾으려면\n두 건 안으로 요청해야 해.'),
       N('잠깐,\n이미 알고 있는 내용들은\n요청하지 않아도 되잖아?'),
       C('지금까지 얻은 것을\n책상 위에 한 장씩 놓는다.')];
@@ -1367,7 +1383,7 @@
     var step = function () { return [C('발소리가\n하나 더 들린다.')]; };
     return [
       { t: 'save', id: 'e1s5' }, { t: 'pov', who: '윤서연' },
-      { t: 'cap', lines: [['', '윤서연'], ['dim', '화요일 23:38']] }, CLK('화 23:38'), BG(),
+      { t: 'cap', pic: 'home', lines: [['', '윤서연'], ['dim', '화요일 23:38']] }, CLK('화 23:38'), BG(),
       { t: 'doc', id: 'prop', opt: { name: 'e1_hand', text: '열차 문이 열린다.' } },
       N('헤어진 지 두 달.\n그 사람은 아직도\n집 앞에 서 있다.'),
       N('"오빠"라고 부르던 사람이\n이제 세상에서\n제일 무섭다.'),
@@ -1408,9 +1424,10 @@
   function e1s6() {
     return [
       { t: 'save', id: 'e1s6' }, { t: 'pov', who: MJ },
-      { t: 'cap', lines: [['', '강민재'], ['dim', '금요일 21:30']] }, CLK('금 21:30'), BG('e1_hall'),
+      { t: 'cap', pic: 'minjae', lines: [['', '강민재'], ['dim', '금요일 21:30']] }, CLK('금 21:30'), BG('e1_hall'),
       C('코트를 벗어\n팔에 건다.'),
       N('전화를 받고\n바로 왔다.\n늦게 오면 그게 더 이상하다.'),
+      R(function () { return F.L2.length >= 3 ? [N('편의점 창가.\n안경 쓴 여자.\n…한지우 씨였지.')] : []; }),
       BG('e1_room'),
       N('참고인이다.\n체포된 게 아니다.'),
       { t: 'enter', ch: 'dohyeon' },
@@ -1423,8 +1440,10 @@
       { t: 'choose', opts: [state('C', '알림'), state('C', '봤다', 'A4')] },
       C('형사가 서류철을 덮는다.'),
       T(DH, '잠깐 쉬었다 하죠.'), { t: 'fx', face: 'E0' },
+      C('형사가 일어선다.'),
+      T(MJ, '아, 형사님.'), T(MJ, '아까 그 센터 직원분은\n퇴근 잘 하셨습니까?'),
       { t: 'exit' },
-      C('문 닫히는 소리.'),
+      C('형사가 대답 없이 나간다.\n문 닫히는 소리.'),
       N('표정이 없다.\n그러면 된 거다.'),
       { t: 'run', fn: e1s7 }];
   }
@@ -1516,7 +1535,7 @@
     if (!F.stA) { F.stA = '집'; F.stB = '모름'; F.stC = '알림'; }   // only when jumped to directly
     return [
       { t: 'save', id: 'e1s7' }, { t: 'pov', who: DH },
-      { t: 'cap', lines: [['', '백도현'], ['dim', '금요일 21:50']] }, CLK('금 21:50'), BG('e1_hall'),
+      { t: 'cap', pic: 'dohyeon', lines: [['', '백도현'], ['dim', '금요일 21:50']] }, CLK('금 21:50'), BG('e1_hall'),
       C('손에 카드 몇 장.'),
       N('강민재의 진술은\n조서에 다 남았다.'), N('이제 이걸\n하나씩 깨야 한다.'),
       BG('e1_room'), C('문을 연다.'),
@@ -1544,6 +1563,8 @@
       [F.E7, '그 끈은 서연의 가방이었다.'],
       [F.CAR, '지우는 그 차를 도현에게 알렸다.'],
       [M(2), '그녀는 최근 현관에\n보조 잠금장치를 달았다.'],
+      [true, '누군가 그 집에 드나들며\n고양이 밥을 채워 두었다.'],
+      [M(3), '접근금지 신청에 쓸 집 앞 사진이\n모두 없어졌다.'],
       [F.ending === 'A', '그녀는 서평동 세탁소 창고에서\n살아서 발견되었다.'],
       [F.ending === 'B', '그녀는 서평동 세탁소 창고에서\n발견되었다.'],
       [F.ending === 'C', '강민재는 집으로 돌아갔다.']
@@ -1664,12 +1685,28 @@
     });
     ov.appendChild(b);
   }
-  var capTimers = [], capDone = true, capFinish = function () {};
+  var capTimers = [], capDone = true, capFinish = function () {}, capLeave = function () {};
   function cap(s) {
     show(ov, true); ov.className = 'fs';
     var c = el('div', 'cap'), ps = [];
     s.lines.forEach(function (l) { var p = el('p', l[0], l[1]); ps.push(p); c.appendChild(p); });
     var sub = el('div', 'sub fs-s blink hide', '화면을 눌러 계속');
+    capLeave = next;
+    if (s.pic) {                                     // episode 1 on: whose eyes this section is seen through, kept dark behind the caption
+      var im = s.pic === 'home' ? img.bg.home : img[s.pic].face_E0, cv = el('canvas', 'capbg' + (s.pic === 'home' ? ' full' : ''));
+      cv.width = 144; cv.height = im.height; cv.getContext('2d').drawImage(im, 0, 0); ov.appendChild(cv);
+      setTimeout(function () { cv.classList.add('on'); }, 60);
+      for (var qi = 0; qi < queue.length && /^(clk|bg|save)$/.test(queue[qi].t); qi++) {   // set the coming scene behind the caption, so the fade never shows the last one
+        var q = queue[qi];
+        if (q.t === 'clk') clockEl.textContent = q.c;
+        if (q.t === 'bg') { B.name = q.name; B.time = q.time || ''; B.close = false; zoom(1); B.flicker = false; B.dim = false; drawBg(); if (q.clock != null) clockEl.textContent = q.clock; }
+      }
+      var leaving = false;
+      capLeave = function () {
+        if (leaving) return; leaving = true; ov.style.transition = 'opacity .5s steps(5)'; ov.style.opacity = '0';
+        setTimeout(function () { ov.style.transition = ''; ov.style.opacity = ''; next(); }, 520);
+      };
+    }
     ov.appendChild(c); ov.appendChild(sub);
     capDone = false; capTimers.forEach(clearTimeout); capTimers = [];
     ps.forEach(function (p, i) { capTimers.push(setTimeout(function () { p.classList.add('on'); }, 350 + i * 800)); });
@@ -1719,7 +1756,7 @@
   }
   function doc(s) {
     show(ov, true); ov.className = 'fs doc' + (/^(prop|smile|calling|lock|drawer|stick|memo|notice|ledger|receipt|card|proxy|idcard|idcopy|plate|keypad|e1obj|ecard)$/.test(s.id) ? ' prop' : '');
-    docBusy = false; clearTimeout(docTimer); docDone = function () {};
+    docBusy = false; clearTimeout(docTimer); docDone = function () {}; docFinish = function () {};   // a finish handler left by an earlier sheet must not let a tap skip this one
     docs[s.id](s.opt).forEach(function (n) { ov.appendChild(n); });
     var sub = el('div', 'sub fs-s blink', s.id === 'drawer' ? '화면을 눌러 꺼내기' : '화면을 눌러 닫기'); ov.appendChild(sub);
     if (docBusy) { show(sub, false); docDone = function () { docBusy = false; show(sub, true); }; }
@@ -1754,7 +1791,8 @@
     var cnt = el('span'); cnt.appendChild(document.createTextNode('물을 수 있는 건 ')); cnt.appendChild(el('b', null, st.left + '번')); top.appendChild(cnt);
     top.appendChild(ledgerBtn({ t: 'ask', set: set })); pick.appendChild(top);
     QSETS[set].forEach(function (q, idx) {
-      var b = el('button', 'opt', q.label);
+      if (!shown(QSETS[set], st, idx)) return;
+      var b = el('button', 'opt' + sub(QSETS[set], idx), q.label);
       b.disabled = st.asked.indexOf(idx) >= 0;
       onPress(b, function () {
         st.asked.push(idx); st.left--; if (q.flag) F[q.flag] = 1;
@@ -1784,14 +1822,14 @@
       [true, '휴대폰의 주인은 윤서진의 동생이다.\n화요일 밤부터 연락이 없다.'],
       [has(sj, 0), '휴대폰 신호는 화요일 밤 이 역에서 멈췄다.'],
       [has(sj, 1), '동생은 휴대폰을 두고 다니지 않는다.'],
-      [has(sj, 2), '동생은 누가 자꾸 집 앞에 서 있다고 했다.'],
+      [has(sj, 3), '동생은 누가 자꾸 집 앞에 서 있다고 했다.'],
       [!!F.PEEK, '화요일 23:47, 보내지 못한 메시지가 있었다.'],
       [true, '계단참에 젊은 남자가 서 있었다.'],
-      [has(mj, 0), '강민재는 잠금 번호를 알았다.\n0412.'],
+      [has(mj, 1), '강민재는 잠금 번호를 알았다.\n0412.'],
       [!!F.ASK_WHERE, '강민재는 “7-4 쪽 벤치”라고 말했다.\n대장에만 적힌 장소다.'],
       [has(mj, 2), '강민재는 그녀가 아파서 못 온다고 했다.'],
       [!!F.ASK_CALL, '강민재가 보여준 문자는 오늘 오후 2:10에 왔다.\n휴대폰은 수요일부터 서랍에 있었다.'],
-      [has(mj, 4), '강민재는 언니가 다녀간 것을 알았다.'],
+      [has(mj, 0), '강민재는 언니가 다녀간 것을 알았다.'],
       [!!F.TOLD, '나는 강민재에게 가족이 가져갔다고 말했다.'],
       [F.PHONE === '민재', '강민재의 위임장은 센터 서류함에 남았다.'],
       [F.PHONE !== '민재', '강민재는 내 이름을 안다.']
@@ -1879,7 +1917,7 @@
   }
 
   stage.addEventListener('click', function () {
-    if (mode === 'cap') { if (!capDone) return capFinish(); return next(); }
+    if (mode === 'cap') { if (!capDone) return capFinish(); return capLeave(); }
     if (mode === 'known') { if (!endDone) return endFinish(); return endNext(); }
     if (mode === 'doc') { if (docBusy) return docFinish(); return next(); }
     if (mode === 'say') { if (typing) finishTyping(); else next(); }
